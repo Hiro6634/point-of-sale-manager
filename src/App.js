@@ -1,49 +1,32 @@
-import ProductItem from './components/product-item/product-item.component';
+import { Routes, Route } from 'react-router-dom';
+import Home from './routes/home/home.component'
 
-import "./products.styles.scss";
+const Stock = () => (
+  <div>
+    <h1>Stock Page</h1>
+  </div>
+);
+
+const Products = () => (
+  <div>
+    <h1>Products Page</h1>
+  </div>
+);
+
+const Help = () => (
+  <div>
+    <h1>Help Page</h1>
+  </div>
+);
 
 const  App = () => {
-
-  const products = [
-    {
-      id: 1,
-      category: 'Parrilla',
-      name: 'Hamburguesa',
-      price: 100,
-      enable: true
-    },
-    {
-      id: 2,
-      category: 'Nihonryori',
-      name: 'Udon',
-      price: 900,
-      enable: true
-    },
-    {
-      id: 3,
-      category: 'Nihonryori',
-      name: 'Yakitori',
-      price: 500,
-      enable: true
-    }
-  ]
-
-  return (
-    <div className="products-container">
-      <div className="products-header-container">
-        <span className="product-header">Categoria</span>
-        <span className="product-header">Producto</span>
-        <span className="product-header">Precio</span>
-        <span className="product-header">Habilitado</span>
-        <span className="product-header">Editar</span>
-        <span className="product-header">Borrar</span>
-      </div>
-      <div className="products-items-container">
-        {products.map(({product}) => (
-          <ProductItem key={product.id} product={product}/>
-        ))}
-      </div>
-    </div>
+  return(
+    <Routes>
+      <Route path='/' element={<Home/>}/>
+      <Route path='/stock' element={<Stock/>}/>
+      <Route path='/products' element={<Products/>}/>
+      <Route path='/help' element={<Help/>}/>
+    </Routes>
   );
 }
 
