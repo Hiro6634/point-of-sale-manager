@@ -1,0 +1,38 @@
+.products-container {
+    margin: auto;
+    width:700px;
+    padding: 10px;
+
+    .products-header-container {
+        background-color: lightgrey;
+        margin: auto;
+        width: 60%;
+        padding: 10px;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        font-weight: bold;
+        border-bottom: 1px solid black;
+        .product-header {
+            padding: 5px;
+        }
+    }
+
+    .products-items-container {
+        .product-item-container{
+            background-color: cyan;
+            margin: auto;
+            width: 60%;
+            padding: 10px;
+    
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+    
+            .product-item {
+                padding: 5px;
+            }
+        }
+    }
+}
