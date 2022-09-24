@@ -1,3 +1,4 @@
+import { Outlet } from 'react-router-dom';
 import ProductItem from '../../components/product-item/product-item.component';
 
 import './products.styles.scss';
@@ -67,6 +68,7 @@ const Home = () => {
               <ProductItem key={product.id} product={product}/>
             ))}
           </div>
+          <Outlet/>
         </div>
       );
    
