@@ -1,0 +1,14 @@
+.product-item-container{
+    background-color: cyan;
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    .product-item {
+        padding: 5px;
+    }
+}

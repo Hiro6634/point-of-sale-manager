@@ -1,3 +1,5 @@
+import ProductItem from './components/product-item/product-item.component';
+
 import "./products.styles.scss";
 
 const  App = () => {
@@ -37,15 +39,8 @@ const  App = () => {
         <span className="product-header">Borrar</span>
       </div>
       <div className="products-items-container">
-        {products.map(({category, name, price, enable}) => (
-          <div className="product-item-container">
-            <span className="product-item">{category}</span>
-            <span className="product-item">{name}</span>
-            <span className="product-item">${price}</span>
-            <span className="product-item">{enable?"True":"False"}</span>
-            <span className="product-item">edit</span>
-            <span className="product-item">del</span>
-          </div>
+        {products.map(({product}) => (
+          <ProductItem key={product.id} product={product}/>
         ))}
       </div>
     </div>
