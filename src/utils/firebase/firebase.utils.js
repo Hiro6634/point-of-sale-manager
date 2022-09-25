@@ -6,6 +6,13 @@ import {
     GoogleAuthProvider
 } from 'firebase/auth'
 
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc
+} from 'firebase/firestore';
+
 const firebaseConfig = {
     apiKey: "AIzaSyAX-qkALEtk-Vxdd-4bwU5gXundlcwFGwk",
     authDomain: "pointofsale-ae0fd.firebaseapp.com",
@@ -14,16 +21,39 @@ const firebaseConfig = {
     messagingSenderId: "855078399227",
     appId: "1:855078399227:web:83d784b43ab9385154145e",
     measurementId: "G-1RSNNYZ9XE"
-  };
+};
   
-  // Initialize Firebase
-  const firebaseApp = initializeApp(firebaseConfig);
-  
-  const provider = new GoogleAuthProvider();
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const provider = new GoogleAuthProvider();
 
-  provider.setCustomParameters({
+provider.setCustomParameters({
     prompt: "select_account"
-  });
+});
 
-  export const auth = getAuth();
-  export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const auth = getAuth();
+export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
+export const db = getFirestore();
+export const createUserDocumentFromAuth = async(userAuth) => {
+    const userDocRef = doc(db, 'users', userAuth.uid);
+
+    const userSnapshot = await getDoc(userDocRef);
+
+    if(!userSnapshot.exists()){
+        const {displayName, email} = userAuth;
+        const createAt = new Date();
+
+        try{
+            await setDoc(userDocRef, {
+                displayName,
+                email,
+                createAt
+            });
+        }catch(error){
+            console.log('error creating the user ', error.message);
+        }
+    }
+
+    return userDocRef;
+}
