@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import Home from './routes/home/home.component'
 import Navigation from './routes/navigation/navigation.component';
+import SignIn from './routes/sign-in/sign-in.component';
 
 const Stock = () => (
   <div>
@@ -29,6 +30,7 @@ const  App = () => {
         <Route path='stock' element={<Stock/>}/>
         <Route path='products' element={<Products/>}/>
         <Route path='help' element={<Help/>}/>
+        <Route path='signIn' element={<SignIn/>}/>
       </Route>
     </Routes>
   );
