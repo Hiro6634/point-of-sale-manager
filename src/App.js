@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import Home from './routes/home/home.component'
 import Navigation from './routes/navigation/navigation.component';
-import SignIn from './routes/sign-in/sign-in.component';
+import Authentication from './routes/authentication/authentication.component';
 
 const Stock = () => (
   <div>
@@ -13,6 +13,12 @@ const Stock = () => (
 const Products = () => (
   <div>
     <h1>Products Page</h1>
+  </div>
+);
+
+const UserMgm = () => (
+  <div>
+    <h1>User Management Page</h1>
   </div>
 );
 
@@ -29,8 +35,9 @@ const  App = () => {
         <Route index  element={<Home/>}/>
         <Route path='stock' element={<Stock/>}/>
         <Route path='products' element={<Products/>}/>
+        <Route path='users' element={<UserMgm/>}/>
         <Route path='help' element={<Help/>}/>
-        <Route path='signIn' element={<SignIn/>}/>
+        <Route path='auth' element={<Authentication/>}/>
       </Route>
     </Routes>
   );
