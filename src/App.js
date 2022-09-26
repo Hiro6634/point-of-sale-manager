@@ -3,16 +3,11 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './routes/home/home.component'
 import Navigation from './routes/navigation/navigation.component';
 import Authentication from './routes/authentication/authentication.component';
+import Products from './routes/products/products.component';
 
 const Stock = () => (
   <div>
     <h1>Stock Page</h1>
-  </div>
-);
-
-const Products = () => (
-  <div>
-    <h1>Products Page</h1>
   </div>
 );
 
