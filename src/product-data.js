@@ -1,0 +1,25 @@
+const PRODUCTS_DATA = [
+    {
+      id: 1,
+      category: "Parrilla",
+      name: "Hamburguesa",
+      price: 100,
+      enable: true
+    },
+    {
+      id: 2,
+      category: "Nihonryori",
+      name: "Udon",
+      price: 900,
+      enable: true
+    },
+    {
+      id: 3,
+      category: "Nihonryori",
+      name: "Yakitori",
+      price: 500,
+      enable: true
+    }
+  ]
+
+  export default PRODUCTS_DATA;
