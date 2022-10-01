@@ -1,37 +1,39 @@
 import { useContext } from 'react';
 import { ProductsContext } from '../../context/products.context';
+import ProductLineItem from '../product-line-item/product-line-item.component';
 
 import { 
     ProductTableContainer,
-    ProductHeaderContainer,
+    ProductTableHeaderContainer,
     CategorySpan,
     NameSpan,
     PriceSpan,
-    EnableSpan
+    EnableSpan,
+    ControlsSpan,
+    ProductTableBodyContainer
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
     const {products} = useContext(ProductsContext);
     return(
         <ProductTableContainer>
-            <ProductHeaderContainer>
+            <ProductTableHeaderContainer>
                 <CategorySpan>Categoria</CategorySpan>    
                 <NameSpan>Producto</NameSpan>
                 <PriceSpan>Precio</PriceSpan>
                 <EnableSpan>Habilitado</EnableSpan>
-            </ProductHeaderContainer>
-        {
-            Object.keys(products).map((key)=>{
-                const { id, category, name, price, enable} = products[key];
-                return(
-                    <div key={id}>
-                        <span>{category}</span>
-                        <span>{name}</span>
-                        <span>{price}</span>
-                        <span>{enable?"True":"False"}</span>
-                    </div>
-                )
-        })}
+                <ControlsSpan>Editar/Borrar</ControlsSpan>
+            </ProductTableHeaderContainer>
+            <ProductTableBodyContainer>
+            {
+                Object.keys(products).map((key)=>{
+                    const { id } = products[key];
+                    return(
+                        <ProductLineItem key={id} product={products[key]}/>
+                    )
+                }            
+            )}
+            </ProductTableBodyContainer>
         </ProductTableContainer>
     );
 };

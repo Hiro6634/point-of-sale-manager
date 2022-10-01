@@ -5,7 +5,7 @@ import { ProductsContainer } from './products.styles';
 const Products = () => {
     return( 
         <ProductsContainer>
-            <h2>Productos</h2>
+            <h2>PRODUCTOS</h2>
             <ProductsTable/> 
         </ProductsContainer>
     )

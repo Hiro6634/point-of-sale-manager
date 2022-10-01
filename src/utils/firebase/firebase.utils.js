@@ -44,6 +44,29 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
 export const db = getFirestore();
 
+export const addOrUpdateProduct = async (product) => {
+    console.log("PRODUCT:", product);
+    try{
+        const collectionRef = collection(db, "products");
+        const batch = writeBatch(db);
+        const docRef =  collectionRef.doc(product.name.toLowerCase());
+        
+        const q = query(docRef);
+
+        const docSnapshot = await getDoc(q);
+        if( docSnapshot.exists){
+            batch.update(docRef, product);
+        } else {
+            batch.set(docRef, product);
+        }
+
+        await batch.commit();
+        console.log("Done!");
+    } catch( error ){
+        console.error(error);
+    }
+}
+
 export const getCollectionAndDocuments = async (collectionName) => {
     const collectionRef = collection(db, collectionName);
     const q = query(collectionRef);
