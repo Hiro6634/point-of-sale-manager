@@ -23,11 +23,13 @@ const productReducer = (state, action) => {
     switch(type){
         case PRODUCT_ACTION_TYPES.UPDATE_PRODUCT:
             return{
-                ...state
+                ...state,
+                product: payload;
             };
         case PRODUCT_ACTION_TYPES.CLEAR_PRODUCT:
             return{
-                ...state
+                ...state,
+                product: null
             };
         case PRODUCT_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN:
             return{
