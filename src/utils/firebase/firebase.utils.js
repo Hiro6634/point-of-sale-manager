@@ -44,14 +44,24 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
 export const db = getFirestore();
 
+export const removeProduct = async (product) => {
+    try{
+
+    }catch(error){
+        console.error("ERROR:"+error);
+        const docRef = doc(db, "products",product.name.toLowerCase());
+        const batch = writeBatch(db);
+       
+        const docSnapshot = await getDoc(docRef);
+        if(docSnapshot.exists){
+            batch.delete(docRef, product);
+        }
+        await batch.commit();
+    }
+}
 export const addOrUpdateProduct = async (product) => {
     try{
-        await console.log("PRODUCT", product);
-        const {name, enable} = product;
         const docRef = doc(db, "products",product.name.toLowerCase());
-        console.log("product name:"+name);
-        console.log(enable?"ENABLE":"DISABLE");
-        // const docRef = doc(db, "products",'araca');
         const batch = writeBatch(db);
        
         const docSnapshot = await getDoc(docRef);
@@ -61,7 +71,6 @@ export const addOrUpdateProduct = async (product) => {
             batch.set(docRef, product);
         }
         await batch.commit();
-        console.log("Done!");
     } catch( error ){
         console.error("ERROR:"+error);
     }

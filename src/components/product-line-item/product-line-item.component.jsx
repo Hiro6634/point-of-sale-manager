@@ -12,7 +12,8 @@ import {
     IconContainer,
     NameContainer,
     PriceContainer,
-    ProductLineItemContainer 
+    ProductLineItemContainer ,
+    ControlsContainer
 } from './product-line-item.styles';
 
 const ProductLineItem = ({product}) => {
@@ -26,12 +27,19 @@ const ProductLineItem = ({product}) => {
             <PriceContainer>${price}</PriceContainer>
             <EnableContainer>
                 <IconContainer onClick={()=>{
-                    console.log('YES! '+ name);
                     toggleProduct(product);
                 }}>
                     {enable?<IconTrue/>:<IconFalse/>}
                 </IconContainer>
             </EnableContainer>
+            <ControlsContainer>
+                <IconContainer isCleckeable>
+                    <IconEdit/>
+                </IconContainer>
+                <IconContainer isCleckeable>
+                    <IconDelete/>
+                </IconContainer>
+            </ControlsContainer>
         </ProductLineItemContainer>
     );
 };

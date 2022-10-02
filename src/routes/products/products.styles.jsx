@@ -7,3 +7,7 @@ export const ProductsContainer = styled.div`
     flex-direction: column;
     padding: 5px 20px;
 `;
+
+export const ButtonContainer = styled.div`
+    width: 200px;
+`;

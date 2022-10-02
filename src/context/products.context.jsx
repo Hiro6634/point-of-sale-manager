@@ -8,15 +8,18 @@ import { createAction } from '../utils/reducer/reducer.utils';
 
 export const ProductsContext = createContext({
     products: [],
+    hidden: true
 });
 
 const PRODUCTS_ACTION_TYPES = {
     SET_PRODUCTS:'SET_PRODUCTS',
+    TOGGLE_EDIT_PRODUCT_HIDDEN: 'TOGGLE_EDIT_PRODUCT_HIDDEN',
     TOGGLE_PRODUCT: 'TOGGLE_PRODUCT'
 };
 
 const INITIAL_STATE = {
-    products: []
+    products: [],
+    hidden: true
 };
 
 const productsReducer = (state,action) => {
@@ -28,6 +31,11 @@ const productsReducer = (state,action) => {
                 ...state,
                 products: payload
             };
+        case PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN:
+            return {
+                ...state,
+                hidden: !state.hidden
+            }
         case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT:
             return {
                 ...state,
@@ -45,7 +53,7 @@ const toggleProductState = (products, product) => {
 }
 
 export const ProductsProvider = ({children}) => {
-    const [{products}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const [{products, hidden}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
 
     const setProducts = (products) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.SET_PRODUCTS, products));
@@ -55,6 +63,9 @@ export const ProductsProvider = ({children}) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, product));
     }
 
+    const toggleProductEditHidden = () => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN));
+    }
     useEffect(()=>{
         const getProductMap = async () =>{
             const productMap = await getCollectionAndDocuments('products');
@@ -63,7 +74,12 @@ export const ProductsProvider = ({children}) => {
 
         getProductMap()
     }, []);
-    const value = {products, toggleProduct};
+    const value = {
+        products, 
+        hidden,
+        toggleProduct,
+        toggleProductEditHidden
+    };
 
     return(
         <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>
