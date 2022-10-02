@@ -42,7 +42,7 @@ const productsReducer = (state,action) => {
                 products: toggleProductState( state.products, payload)
             };
         default:
-            throw new Error('unhandled type of ${type} in productsReducer')
+            throw new Error('unhandled type of ${type} in productsReducer');
     }
 }
 
