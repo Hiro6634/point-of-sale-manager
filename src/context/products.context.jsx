@@ -50,6 +50,10 @@ export const ProductsProvider = ({children}) => {
     const setProducts = (products) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.SET_PRODUCTS, products));
     }
+    
+    const toggleProduct = (product) => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, product));
+    }
 
     useEffect(()=>{
         const getProductMap = async () =>{
@@ -59,7 +63,7 @@ export const ProductsProvider = ({children}) => {
 
         getProductMap()
     }, []);
-    const value = {products, dispatch};
+    const value = {products, toggleProduct};
 
     return(
         <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>

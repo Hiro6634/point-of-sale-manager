@@ -16,7 +16,7 @@ import {
 } from './product-line-item.styles';
 
 const ProductLineItem = ({product}) => {
-    const {dispatch} = useContext(ProductsContext);
+    const {toggleProduct} = useContext(ProductsContext);
     const {category, name,price, enable} = product;
 
     return(
@@ -27,7 +27,7 @@ const ProductLineItem = ({product}) => {
             <EnableContainer>
                 <IconContainer onClick={()=>{
                     console.log('YES! '+ name);
-                    dispatch({ type: 'TOGGLE_PRODUCT', payload: product});
+                    toggleProduct(product);
                 }}>
                     {enable?<IconTrue/>:<IconFalse/>}
                 </IconContainer>
