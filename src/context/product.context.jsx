@@ -24,7 +24,7 @@ const productReducer = (state, action) => {
         case PRODUCT_ACTION_TYPES.UPDATE_PRODUCT:
             return{
                 ...state,
-                product: payload;
+                product: payload
             };
         case PRODUCT_ACTION_TYPES.CLEAR_PRODUCT:
             return{
