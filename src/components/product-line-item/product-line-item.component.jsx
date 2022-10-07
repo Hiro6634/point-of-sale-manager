@@ -4,8 +4,8 @@ import {ReactComponent as IconEdit} from '../../assets/create-outline.svg';
 import {ReactComponent as IconTrue} from '../../assets/checkmark-outline.svg';
 import {ReactComponent as IconFalse} from '../../assets/close-outline.svg';
 
-import { ProductsContext } from '../../context/products.context';
-
+import { ProductContext } from '../../context/product.context';
+import { ProductsContext } from '../../context/products.context'; 
 import { 
     CategoryContainer,
     EnableContainer,
@@ -15,16 +15,35 @@ import {
     ProductLineItemContainer ,
     ControlsContainer
 } from './product-line-item.styles';
+import { removeProduct } from '../../utils/firebase/firebase.utils';
 
 const ProductLineItem = ({product}) => {
-    const {toggleProduct} = useContext(ProductsContext);
+    const {
+        toggleProduct, 
+        clearProduct,
+        updateProduct,
+        toggleProductEditHidden
+    } = useContext(ProductContext);
+    const {
+        deleteProduct
+    } = useContext(ProductsContext);
+
     const {category, name,price, enable} = product;
 
     return(
         <ProductLineItemContainer>
-            <CategoryContainer>{category.toUpperCase()}</CategoryContainer>
-            <NameContainer>{name.toUpperCase()}</NameContainer>
-            <PriceContainer>${price}</PriceContainer>
+            <CategoryContainer
+                disable={!enable}>
+                {category.toUpperCase()}
+            </CategoryContainer>
+            <NameContainer
+                disable={!enable}>
+                {name.toUpperCase()}
+            </NameContainer>
+            <PriceContainer
+                disable={!enable}>
+                ${price}
+            </PriceContainer>
             <EnableContainer>
                 <IconContainer onClick={()=>{
                     toggleProduct(product);
@@ -34,14 +53,23 @@ const ProductLineItem = ({product}) => {
             </EnableContainer>
             <ControlsContainer>
                 <IconContainer isCleckeable>
-                    <IconEdit/>
+                    <IconEdit onClick={()=>{
+                        updateProduct(product);
+                        toggleProductEditHidden();
+                    }}/>
                 </IconContainer>
                 <IconContainer isCleckeable>
-                    <IconDelete/>
+                    <IconDelete onClick={()=>{
+                        console.log("DELETE! product:"+name)
+                        window.confirm("QUIERE ELIMINAR EL PRODUCTO: " + name + "?") ?
+                            deleteProduct(product)
+                        :
+                            console.log("CANCEL");
+                    }}/>
                 </IconContainer>
             </ControlsContainer>
         </ProductLineItemContainer>
     );
 };
 
-export default ProductLineItem;
+export default ProductLineItem; 

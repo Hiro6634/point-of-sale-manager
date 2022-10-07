@@ -1,20 +1,21 @@
 import { createContext, useEffect, useReducer } from 'react';
 
 import { 
-    getCollectionAndDocuments,
-    addOrUpdateProduct 
+    getCollectionAndDocuments, 
+    removeProduct
 } from '../utils/firebase/firebase.utils';
+
 import { createAction } from '../utils/reducer/reducer.utils';
 
 export const ProductsContext = createContext({
     products: [],
-    hidden: true
 });
 
 const PRODUCTS_ACTION_TYPES = {
     SET_PRODUCTS:'SET_PRODUCTS',
+    DELETE_PRODUCT: 'DELETE_PRODUCT',
+    ADD_PRODUCT: 'ADD_PRODUCT',
     TOGGLE_EDIT_PRODUCT_HIDDEN: 'TOGGLE_EDIT_PRODUCT_HIDDEN',
-    TOGGLE_PRODUCT: 'TOGGLE_PRODUCT'
 };
 
 const INITIAL_STATE = {
@@ -31,24 +32,35 @@ const productsReducer = (state,action) => {
                 ...state,
                 products: payload
             };
+        case PRODUCTS_ACTION_TYPES.DELETE_PRODUCT:
+            return {
+                ...state,
+                products: deleteProduct(state.products, payload)
+            };
+        case PRODUCTS_ACTION_TYPES.ADD_PRODUCT:
+            return {
+                ...state,
+                products: addProduct(state.products, payload)
+            };
         case PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN:
             return {
                 ...state,
                 hidden: !state.hidden
             }
-        case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT:
-            return {
-                ...state,
-                products: toggleProductState( state.products, payload)
-            };
         default:
-            throw new Error('unhandled type of ${type} in productsReducer');
+            throw new Error(`unhandled type of ${type} in productsReducer`);
     }
 }
 
-const toggleProductState = (products, product) => {
-    product.enable = !product.enable;
-    addOrUpdateProduct(product);
+const deleteProduct = (products, productToDelete) => {
+    console.log("Remove product:" + productToDelete.name);
+    removeProduct(productToDelete);
+    return {...products};
+}
+
+const addProduct = (products, productToDelete) => {
+    console.log("Add product:" + productToDelete.name);
+    // removeProduct(productToDelete);
     return {...products};
 }
 
@@ -59,13 +71,19 @@ export const ProductsProvider = ({children}) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.SET_PRODUCTS, products));
     }
     
-    const toggleProduct = (product) => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, product));
+    const deleteProduct = (product) => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.DELETE_PRODUCT, product));
     }
+
+    const addProduct = (product) => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.ADD_PRODUCT, product));
+    }
+   
 
     const toggleProductEditHidden = () => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN));
     }
+
     useEffect(()=>{
         const getProductMap = async () =>{
             const productMap = await getCollectionAndDocuments('products');
@@ -77,7 +95,8 @@ export const ProductsProvider = ({children}) => {
     const value = {
         products, 
         hidden,
-        toggleProduct,
+        deleteProduct,
+        addProduct,
         toggleProductEditHidden
     };
 

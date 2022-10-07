@@ -1,53 +1,77 @@
 import { createContext, useEffect, useReducer } from 'react';
 
+import { 
+    getCollectionAndDocuments,
+    addOrUpdateProduct 
+} from '../utils/firebase/firebase.utils';
 import { createAction } from '../utils/reducer/reducer.utils';
 
 export const ProductContext = createContext({
-    product: null,
+    products: [],
     hidden: true
 });
 
 const PRODUCT_ACTION_TYPES = {
+    TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
     UPDATE_PRODUCT: 'UPDATE_PRODUCT',
     CLEAR_PRODUCT: 'CLEAR_PRODUCT',
-    TOGGLE_EDIT_PRODUCT_HIDDEN: 'TOGGLE_EDIT_PRODUCT_HIDDEN'
-}
+    TOGGLE_EDIT_PRODUCT_HIDDEN: 'TOGGLE_EDIT_PRODUCT_HIDDEN',
+};
+
 const INITIAL_STATE = {
     product: null,
-    hidden: true
-}
+};
 
-const productReducer = (state, action) => {
-    const {type, payload} = action;
+const productReducer = (state,action) => {
+    const {type, payload } = action;
 
     switch(type){
+        case PRODUCT_ACTION_TYPES.TOGGLE_PRODUCT:
+            return {
+                ...state,
+                products: toggleProductState( state.products, payload)
+            };
         case PRODUCT_ACTION_TYPES.UPDATE_PRODUCT:
-            return{
+            return {
                 ...state,
                 product: payload
             };
-        case PRODUCT_ACTION_TYPES.CLEAR_PRODUCT:
-            return{
-                ...state,
-                product: null
-            };
-        case PRODUCT_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN:
-            return{
-                ...state,
-                hidden: !state.hidden
-            };
-    
+            case PRODUCT_ACTION_TYPES.CLEAR_PRODUCT:
+                return {
+                    ...state,
+                    product: null
+                };
         default:
-            throw new Error('unhandled type of ${type} in productReducer');
+            throw new Error(`unhandled type of ${type} in productsReducer`);
     }
 }
 
-export const ProductProvider = ({children}) => {
-    const [{product}, dispatch] = useReducer(productReducer, INITIAL_STATE);
-    
-    const value = {product};
+const toggleProductState = (products, product) => {
+    product.enable = !product.enable;
+    addOrUpdateProduct(product);
+    return {...products};
+}
 
-    return (
-        <ProductProvider.Provider value={value}>{children}</ProductProvider.Provider>
+export const ProductProvider = ({children}) => {
+    const [product, dispatch] = useReducer(productReducer, INITIAL_STATE);
+
+    const updateProduct = (product) => {
+        dispatch(createAction(PRODUCT_ACTION_TYPES.UPDATE_PRODUCT, product));
+    } 
+    const clearProduct = (product) => {
+        console.log("CLEAR!!!! "+ product.name)
+        dispatch(createAction(PRODUCT_ACTION_TYPES.CLEAR_PRODUCT, product));
+    } 
+    const toggleProduct = (product) => {
+        dispatch(createAction(PRODUCT_ACTION_TYPES.TOGGLE_PRODUCT, product));
+    }
+    const value = {
+        toggleProduct,
+        clearProduct,
+        updateProduct,
+    };
+
+    return(
+        <ProductContext.Provider value={value}>{children}</ProductContext.Provider>
     )
 }

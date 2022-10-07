@@ -46,9 +46,6 @@ export const db = getFirestore();
 
 export const removeProduct = async (product) => {
     try{
-
-    }catch(error){
-        console.error("ERROR:"+error);
         const docRef = doc(db, "products",product.name.toLowerCase());
         const batch = writeBatch(db);
        
@@ -57,6 +54,8 @@ export const removeProduct = async (product) => {
             batch.delete(docRef, product);
         }
         await batch.commit();
+    }catch(error){
+        console.error("ERROR:"+error);
     }
 }
 export const addOrUpdateProduct = async (product) => {

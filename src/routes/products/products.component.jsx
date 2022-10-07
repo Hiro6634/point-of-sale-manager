@@ -8,9 +8,6 @@ import {
     ProductsContainer 
 } from './products.styles';
 
-const handleHidden = () => {
-    console.log("Bingo!");
-}
 const Products = () => {
     const {hidden,toggleProductEditHidden} = useContext(ProductsContext);
     return( 
