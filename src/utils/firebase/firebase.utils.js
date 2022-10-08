@@ -46,7 +46,7 @@ export const db = getFirestore();
 
 export const removeProduct = async (product) => {
     try{
-        const docRef = doc(db, "products",product.name.toLowerCase());
+        const docRef = doc(db, "products",product.name.toLowerCase().replace(' ', '_'));
         const batch = writeBatch(db);
        
         const docSnapshot = await getDoc(docRef);
@@ -58,21 +58,32 @@ export const removeProduct = async (product) => {
         console.error("ERROR:"+error);
     }
 }
-export const addOrUpdateProduct = async (product) => {
+export const insertProduct = async (product) => {
     try{
-        const docRef = doc(db, "products",product.name.toLowerCase());
+        console.log("ID: " + product.id);
+        const docRef = doc(db, "products",product.name.toLowerCase().replace(' ', '_'));
         const batch = writeBatch(db);
-       
+        product.id = product.name.toLowerCase().replace(' ', '_');
+        console.log("product:", product);
         const docSnapshot = await getDoc(docRef);
-        if(docSnapshot.exists){
-            batch.update(docRef, product);
-        }else{
-            batch.set(docRef, product);
-        }
+        console.log("docSnapshot:", docSnapshot);
+        console.log("docSnapshot Exists:"+ docSnapshot.exists?"TRUE":"FALSE");
+        batch.set(docRef, product);
+        // if(docSnapshot.exists){
+        //     console.log("UPDATING");
+        //     batch.update(docRef, product);
+        // }else{
+        //     console.log("INSERTING");
+        //     batch.set(docRef, product);
+        // }
         await batch.commit();
     } catch( error ){
         console.error("ERROR:"+error);
     }
+}
+
+export const updateProduct = async (product) => {
+
 }
 
 export const getCollectionAndDocuments = async (collectionName) => {
@@ -81,8 +92,8 @@ export const getCollectionAndDocuments = async (collectionName) => {
 
     const querySnapshot = await getDocs(q);
     const productMap = querySnapshot.docs.reduce((acc, docSnapshot)=> {
-        const { name } = docSnapshot.data();
-        acc[name.toLowerCase()] = docSnapshot.data();
+        const { id } = docSnapshot.data();
+        acc[id.toLowerCase()] = docSnapshot.data();
         return acc;
     }, {}); 
 
@@ -94,7 +105,7 @@ export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => 
     const batch = writeBatch(db);
 
     objectsToAdd.forEach((object) => {
-        const docRef = doc(collectionRef, object.name.toLowerCase());
+        const docRef = doc(collectionRef, object.name.toLowerCase().replace(' ','_'));
         batch.set(docRef, object);
     });
 

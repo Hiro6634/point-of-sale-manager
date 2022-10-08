@@ -9,14 +9,20 @@ import {
 } from './products.styles';
 
 const Products = () => {
-    const {hidden,toggleProductEditHidden} = useContext(ProductsContext);
+    const {
+        hidden,
+        clearProduct,
+        toggleProductEditHidden
+    } = useContext(ProductsContext);
     return( 
         <ProductsContainer>
             <h2>PRODUCTOS</h2>
             <ProductsTable/>
             <ButtonContainer>
                 <Button onClick={()=>{
-                    toggleProductEditHidden()}}
+                    clearProduct();
+                    toggleProductEditHidden();
+                    }}
                 >
                     Agregar
                 </Button> 

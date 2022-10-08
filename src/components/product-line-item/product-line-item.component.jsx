@@ -15,17 +15,15 @@ import {
     ProductLineItemContainer ,
     ControlsContainer
 } from './product-line-item.styles';
-import { removeProduct } from '../../utils/firebase/firebase.utils';
 
 const ProductLineItem = ({product}) => {
     const {
         toggleProduct, 
-        clearProduct,
-        updateProduct,
-        toggleProductEditHidden
     } = useContext(ProductContext);
     const {
-        deleteProduct
+        deleteProduct,
+        updateProduct,
+        toggleProductEditHidden
     } = useContext(ProductsContext);
 
     const {category, name,price, enable} = product;

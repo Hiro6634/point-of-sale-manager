@@ -6,27 +6,32 @@ import { ProductsContext } from '../../context/products.context';
 
 import { 
     AddProductContainer,
+    FormContainer,
     ButtonContainer
  } from './add-or-update-product.styles';
 
-const AddOrUpdateProduct = ({product}) => {
+const AddOrUpdateProduct = ({productId}) => {
+    const {
+        product,
+        products,
+        toggleProductEditHidden,
+        addProduct
+    } = useContext(ProductsContext);
+
+    console.log("PRODUCT:", product);
     const defaultFormFields = {
         id: product?product.id:null,
         category: product?product.category:'',
         name: product?product.name:'',
         price: product?product.price:0,
-        enable: product?product.enable:false,
         stock: product?product.stock:0,
         warningLevel: product?product.warningLevel:0,
         stopLevel: product?product.stopLevel:0,
-        enableStop: product?product.enableStop:false,
         sales: product?product.sales:0,
+        enable: product?product.enable:false,
+        enableStop: product?product.enableStop:false,
     };
 
-    const {
-        toggleProductEditHidden,
-        addProduct
-    } = useContext(ProductsContext);
     const [formFields, setFormFields] = useState(defaultFormFields);
     const {
         id,
@@ -41,14 +46,18 @@ const AddOrUpdateProduct = ({product}) => {
         sales
     } = formFields; 
 
-    if(product){
-        console.log('must update ', product);
-    } else {
-        console.log('new product');
-    }
-
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log("NAME:" + name);
+
+        if( id !== null){
+            console.log("__PRE:",products[id]);
+            products[product.id] = formFields;
+            console.log("__POS:",products[id]);
+        }
+        //TODO: Ver si es esto o directamente el objetio de la lista
+        await addProduct(formFields);
+        toggleProductEditHidden();
     };
 
     const handleChange = (event) => {
@@ -60,7 +69,7 @@ const AddOrUpdateProduct = ({product}) => {
     return(
         <AddProductContainer>
             <h2>Producto</h2>
-            <form onSubmit={handleSubmit}>
+            <FormContainer onSubmit={handleSubmit}>
                 <FormInput
                     label='Categoria'
                     type='text'
@@ -90,7 +99,7 @@ const AddOrUpdateProduct = ({product}) => {
                     type='number'
                     onChange={handleChange}
                     name='sales'
-                    value={sales}              
+                    value={sales}
                 />
                 <FormInput
                     label='Stock'
@@ -121,7 +130,7 @@ const AddOrUpdateProduct = ({product}) => {
                         name='enableStop'
                         defaultChecked={enableStop}
                         onClick={()=>{
-                            setFormFields({...formFields, enableStop: !enableStop});
+                            console.log("ON CLICK: PRODUCT", product)
                         }}
                     />
                 </div>
@@ -129,11 +138,8 @@ const AddOrUpdateProduct = ({product}) => {
                     <label>HABILITADO</label>
                     <input
                         type='checkbox'
-                        name='enableStop'
+                        name='enable'
                         defaultChecked={enable}
-                        onClick={()=>{
-                            setFormFields({...formFields, enable: !enable});
-                        }}
                     />
                 </div>
                 <ButtonContainer>
@@ -143,14 +149,9 @@ const AddOrUpdateProduct = ({product}) => {
                             toggleProductEditHidden();
                         }
                     }>CANCELAR</Button>
-                    <Button 
-                        type="button" 
-                        onClick={()=>{
-                            addProduct(null);
-                        }
-                    }>ACEPTAR</Button>
+                    <Button type='submit'>ACEPTAR</Button>
                 </ButtonContainer>
-            </form>
+            </FormContainer>
         </AddProductContainer>
     );
 };

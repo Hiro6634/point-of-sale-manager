@@ -1,8 +1,7 @@
 import { createContext, useEffect, useReducer } from 'react';
 
 import { 
-    getCollectionAndDocuments,
-    addOrUpdateProduct 
+    insertProduct 
 } from '../utils/firebase/firebase.utils';
 import { createAction } from '../utils/reducer/reducer.utils';
 
@@ -48,7 +47,7 @@ const productReducer = (state,action) => {
 
 const toggleProductState = (products, product) => {
     product.enable = !product.enable;
-    addOrUpdateProduct(product);
+    insertProduct(product);
     return {...products};
 }
 
