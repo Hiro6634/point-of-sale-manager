@@ -3,7 +3,8 @@ import { createContext, useEffect, useReducer } from 'react';
 import { 
     getCollectionAndDocuments, 
     removeProduct,
-    insertProduct
+    insertProduct,
+    updateProduct
 } from '../utils/firebase/firebase.utils';
 
 import { createAction } from '../utils/reducer/reducer.utils';
@@ -21,6 +22,8 @@ const PRODUCTS_ACTION_TYPES = {
     UPDATE_PRODUCT: 'UPDATE_PRODUCT',
     ADD_PRODUCT: 'ADD_PRODUCT',
     TOGGLE_EDIT_PRODUCT_HIDDEN: 'TOGGLE_EDIT_PRODUCT_HIDDEN',
+    TOGGLE_PRODUCT_ENABLE: 'TOGGLE_PRODUCT_ENABLE',
+    TOGGLE_PRODUCT_ENABLE_STOP: 'TOGGLE_PRODUCT_ENABLE_STOP',
 };
 
 const INITIAL_STATE = {
@@ -56,13 +59,21 @@ const productsReducer = (state,action) => {
         case PRODUCTS_ACTION_TYPES.UPDATE_PRODUCT:
             return {
                 ...state,
-                product: payload,
-                products: updateProduct(state.products, payload)
+                product: payload
             };
         case PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN:
             return {
                 ...state,
                 hidden: !state.hidden
+            }
+        case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE:
+            return {
+                ...state,
+                products: toggleProductEnable(state.products, payload)
+            }
+        case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE_STOP:
+            return {
+                ...state
             }
         default:
             throw new Error(`unhandled type of ${type} in productsReducer`);
@@ -76,24 +87,29 @@ const deleteProduct = (products, productToDelete) => {
 }
 
 const addProduct = (products, productToAdd) => {
-    console.log("Add product:" + productToAdd.name);
-    console.log("Add products:", products);
-    // try{
-    //     products[productToAdd.id] = productToAdd;
-    // } catch(err)
-    // {
-    //     console.log("Missing Product ID: " + productToAdd.id);
-    // }
-    insertProduct(productToAdd);
+    const product = {
+        id: productToAdd.id?productToAdd.id:productToAdd.name.toLowerCase().replaceAll(' ','_'),
+        category: productToAdd.category,
+        name: productToAdd.name,
+        price: parseInt(productToAdd.price),
+        stock: parseInt(productToAdd.stock),
+        warningLevel: (productToAdd.warningLevel),
+        stopLevel: parseInt(productToAdd.stopLevel),
+        sales: parseInt(productToAdd.sales),
+        enable: productToAdd.enable,
+        enableStop: productToAdd.enableStop,
+    }
+    console.log("__ADD__:", product);
+    insertProduct(product);
     return {...products};
 }
 
-const updateProduct = (products, productToUpdate) => {
-    console.log("Update product:" + productToUpdate.name);
-    // updateProduct(productToUpdate);
+const toggleProductEnable = (products, product) => {
+    product.enable = !product.enable;
+    updateProduct(product.id, {enable: product.enable});
+
     return {...products};
 }
-
 export const ProductsProvider = ({children}) => {
     const [{product, products, hidden}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
 
@@ -122,11 +138,19 @@ export const ProductsProvider = ({children}) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN));
     }
 
+    const toggleProductEnable = () => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE));
+    }
+
+    const toggleProductEnableStop = () => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE_STOP));
+    }
+
     useEffect(()=>{
         const getProductMap = async () =>{
-            console.log("Firing...");
             const productMap = await getCollectionAndDocuments('products');
             setProducts(productMap);
+            console.log("loadintg...",productMap);
         }
 
         getProductMap()
@@ -139,7 +163,9 @@ export const ProductsProvider = ({children}) => {
         updateProduct,
         clearProduct,
         addProduct,
-        toggleProductEditHidden
+        toggleProductEditHidden,
+        toggleProductEnable,
+        toggleProductEnableStop
     };
 
     return(

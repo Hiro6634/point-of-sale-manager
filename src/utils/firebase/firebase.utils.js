@@ -61,29 +61,29 @@ export const removeProduct = async (product) => {
 export const insertProduct = async (product) => {
     try{
         console.log("ID: " + product.id);
-        const docRef = doc(db, "products",product.name.toLowerCase().replace(' ', '_'));
+        const docRef = doc(db, "products",product.id);
         const batch = writeBatch(db);
-        product.id = product.name.toLowerCase().replace(' ', '_');
         console.log("product:", product);
-        const docSnapshot = await getDoc(docRef);
-        console.log("docSnapshot:", docSnapshot);
-        console.log("docSnapshot Exists:"+ docSnapshot.exists?"TRUE":"FALSE");
         batch.set(docRef, product);
-        // if(docSnapshot.exists){
-        //     console.log("UPDATING");
-        //     batch.update(docRef, product);
-        // }else{
-        //     console.log("INSERTING");
-        //     batch.set(docRef, product);
-        // }
         await batch.commit();
     } catch( error ){
         console.error("ERROR:"+error);
     }
 }
 
-export const updateProduct = async (product) => {
-
+export const updateProduct = async (docId, updateDoc) => {
+    try{
+        console.log("__UPDATE__ ID: " + docId);
+        const docRef = doc(db, "products",docId);
+        const batch = writeBatch(db);
+        const docSnapshot = await getDoc(docRef);
+        console.log("docSnapshot:", docSnapshot);
+        console.log("docSnapshot Exists:"+ docSnapshot.exists?"TRUE":"FALSE");
+        batch.update(docRef, updateDoc);
+        await batch.commit();
+    } catch( error ){
+        console.error("ERROR:"+error);
+    }
 }
 
 export const getCollectionAndDocuments = async (collectionName) => {

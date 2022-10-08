@@ -15,7 +15,7 @@ const AddOrUpdateProduct = ({productId}) => {
         product,
         products,
         toggleProductEditHidden,
-        addProduct
+        addProduct,
     } = useContext(ProductsContext);
 
     console.log("PRODUCT:", product);
@@ -23,11 +23,11 @@ const AddOrUpdateProduct = ({productId}) => {
         id: product?product.id:null,
         category: product?product.category:'',
         name: product?product.name:'',
-        price: product?product.price:0,
-        stock: product?product.stock:0,
-        warningLevel: product?product.warningLevel:0,
-        stopLevel: product?product.stopLevel:0,
-        sales: product?product.sales:0,
+        price: product?parseInt(product.price):0,
+        stock: product?parseInt(product.stock):0,
+        warningLevel: product?parseInt(product.warningLevel):0,
+        stopLevel: product?parseInt(product.stopLevel):0,
+        sales: product?parseInt(product.sales):0,
         enable: product?product.enable:false,
         enableStop: product?product.enableStop:false,
     };
@@ -49,13 +49,13 @@ const AddOrUpdateProduct = ({productId}) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         console.log("NAME:" + name);
-
-        if( id !== null){
+        if(id !== null){
             console.log("__PRE:",products[id]);
-            products[product.id] = formFields;
+            products[id] = formFields;
             console.log("__POS:",products[id]);
         }
-        //TODO: Ver si es esto o directamente el objetio de la lista
+        console.log("formFields", formFields);
+        //TODO: Ver si es esto o directamente el objeto de la lista
         await addProduct(formFields);
         toggleProductEditHidden();
     };
@@ -131,6 +131,7 @@ const AddOrUpdateProduct = ({productId}) => {
                         defaultChecked={enableStop}
                         onClick={()=>{
                             console.log("ON CLICK: PRODUCT", product)
+                            setFormFields({...formFields, enableStop: !enableStop});
                         }}
                     />
                 </div>
@@ -140,6 +141,9 @@ const AddOrUpdateProduct = ({productId}) => {
                         type='checkbox'
                         name='enable'
                         defaultChecked={enable}
+                        onClick={()=>{
+                            setFormFields({...formFields, enable: !enable});
+                        }}
                     />
                 </div>
                 <ButtonContainer>
