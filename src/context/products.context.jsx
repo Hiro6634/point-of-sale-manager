@@ -1,10 +1,11 @@
-import { createContext, useEffect, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 
 import { 
     getCollectionAndDocuments, 
     removeProduct,
     insertProduct,
-    updateProduct
+    updateProduct,
+    onCollectionChangedListener
 } from '../utils/firebase/firebase.utils';
 
 import { createAction } from '../utils/reducer/reducer.utils';
@@ -147,13 +148,16 @@ export const ProductsProvider = ({children}) => {
     }
 
     useEffect(()=>{
-        const getProductMap = async () =>{
-            const productMap = await getCollectionAndDocuments('products');
-            setProducts(productMap);
-            console.log("loadintg...",productMap);
-        }
+        onCollectionChangedListener('products', (productsMap)=>{
+            setProducts(productsMap);
+        });
+        // const getProductMap = async () =>{
+        //     const productMap = await getCollectionAndDocuments('products');
+        //     setProducts(productMap);
+        //     console.log("loadintg...",productMap);
+        // }
 
-        getProductMap()
+        // getProductMap()
     }, []);
     const value = {
         product,
@@ -172,3 +176,13 @@ export const ProductsProvider = ({children}) => {
         <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>
     )
 }
+
+const useProducts = () => {
+    const context = useContext(ProductsContext);
+    if( context === undefined ){
+        throw new Error("useProducts must be used within ProductsContext");
+    }
+    return context;
+}
+
+export default useProducts;

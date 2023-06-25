@@ -1,7 +1,6 @@
-import { useContext } from 'react';
 import ProductsTable from '../../components/products-table/products-table.component';
 import Button from '../../components/button/button.component';
-import { ProductsContext } from '../../context/products.context';
+import useProducts from '../../context/products.context';
 import AddOrUpdateProduct from '../../components/add-or-update-product/add-or-update-product.component';
 import { 
     ButtonContainer, 
@@ -13,7 +12,7 @@ const Products = () => {
         hidden,
         clearProduct,
         toggleProductEditHidden
-    } = useContext(ProductsContext);
+    } = useProducts();
     return( 
         <ProductsContainer>
             <h2>PRODUCTOS</h2>

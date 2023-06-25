@@ -18,7 +18,8 @@ import {
     collection,
     writeBatch,
     query,
-    getDocs
+    getDocs,
+    onSnapshot
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -32,7 +33,7 @@ const firebaseConfig = {
 };
   
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 
 provider.setCustomParameters({
@@ -155,3 +156,17 @@ export const signOutUser = async () => await signOut(auth);
 
 export const onAuthStateChangedListener = (callback) => 
     onAuthStateChanged(auth, callback);
+
+export const onCollectionChangedListener = (collectionName, callback) => {
+    console.log("Collection:" + collectionName);
+    const collectionRef = collection(db, collectionName);
+
+    onSnapshot(collectionRef, (querySnapshot) =>{
+        const collectionMap = querySnapshot.docs.reduce((acc, docSnapshot)=> {
+            const { id } = docSnapshot.data();
+            acc[id.toLowerCase()] = docSnapshot.data();
+            return acc;
+        }, {}); 
+        callback(collectionMap);
+    });
+}

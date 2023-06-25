@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import { ProductsContext } from '../../context/products.context';
+import useProducts from '../../context/products.context';
 import ProductLineItem from '../product-line-item/product-line-item.component';
 
 import { 
@@ -14,7 +13,7 @@ import {
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
-    const {products} = useContext(ProductsContext);
+    const {products} = useProducts();
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>

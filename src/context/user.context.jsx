@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 import { onAuthStateChangedListener, createUserDocumentFromAuth } from '../utils/firebase/firebase.utils';
 import { createAction } from '../utils/reducer/reducer.utils';
 
@@ -50,3 +50,13 @@ export const UserProvider = ({children}) => {
     },[]);
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
+
+const useUser = () => {
+    const context = useContext(UserContext);
+    if( context === undefined ){
+        throw new Error("useUser must be used within UserContext");
+    }
+    return context;
+}
+
+export default useUser;
