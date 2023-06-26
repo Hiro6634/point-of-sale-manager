@@ -3,6 +3,7 @@ import {ReactComponent as IconDelete} from '../../assets/trash-outline.svg';
 import {ReactComponent as IconEdit} from '../../assets/create-outline.svg';
 import {ReactComponent as IconTrue} from '../../assets/checkmark-outline.svg';
 import {ReactComponent as IconFalse} from '../../assets/close-outline.svg';
+import {ReactComponent as IconSave} from '../../assets/save-alt-svgrepo-com.svg';
 
 import { ProductContext } from '../../context/product.context';
 import useProducts from '../../context/products.context';
@@ -12,37 +13,27 @@ import {
     IconContainer,
     NameContainer,
     StockContainer,
-    ProductLineItemContainer ,
+    ProductLineInputContainer ,
     ControlsContainer
-} from './product-line-item.styles';
+} from './product-line-input.styles';
 
-const ProductLineItem = ({product}) => {
+const ProductLineInput = ({product}) => {
     const {
         toggleProduct, 
     } = useContext(ProductContext);
     const {
         deleteProduct,
         updateProduct,
-        toggleProductEditHidden,
-        editProduct
+        toggleProductEditHidden
     } = useProducts();
 
     const {category, name, stock, enable} = product;
-
+    
     return(
-        <ProductLineItemContainer>
-            <CategoryContainer
-                disable={!enable}>
-                {category.toUpperCase()}
-            </CategoryContainer>
-            <NameContainer
-                disable={!enable}>
-                {name.toUpperCase()}
-            </NameContainer>
-            <StockContainer
-                disable={!enable}>
-                {stock}
-            </StockContainer>
+        <ProductLineInputContainer>
+            <CategoryContainer value={category.toUpperCase()}/>
+            <NameContainer value={name.toUpperCase()}/>
+            <StockContainer value={stock} />
             <EnableContainer>
                 <IconContainer onClick={()=>{
                     toggleProduct(product);
@@ -54,9 +45,7 @@ const ProductLineItem = ({product}) => {
                 <IconContainer isCleckeable>
                     <IconEdit onClick={()=>{
                         updateProduct(product);
-//                        toggleProductEditHidden();
-                        editProduct(product.id);
-                        
+                        toggleProductEditHidden();
                     }}/>
                 </IconContainer>
                 <IconContainer isCleckeable>
@@ -68,9 +57,10 @@ const ProductLineItem = ({product}) => {
                             console.log("CANCEL");
                     }}/>
                 </IconContainer>
-            </ControlsContainer>
-        </ProductLineItemContainer>
+            </ControlsContainer> 
+        </ProductLineInputContainer>
     );
 };
 
-export default ProductLineItem; 
+export default ProductLineInput; 
+

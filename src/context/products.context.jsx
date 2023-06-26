@@ -25,6 +25,7 @@ const PRODUCTS_ACTION_TYPES = {
     TOGGLE_EDIT_PRODUCT_HIDDEN: 'TOGGLE_EDIT_PRODUCT_HIDDEN',
     TOGGLE_PRODUCT_ENABLE: 'TOGGLE_PRODUCT_ENABLE',
     TOGGLE_PRODUCT_ENABLE_STOP: 'TOGGLE_PRODUCT_ENABLE_STOP',
+    EDIT_PRODUCT: "EDIT_PRODUCT",
 };
 
 const INITIAL_STATE = {
@@ -76,6 +77,11 @@ const productsReducer = (state,action) => {
             return {
                 ...state
             }
+        case PRODUCTS_ACTION_TYPES.EDIT_PRODUCT:
+            return {
+                ...state,
+                editProductId: payload 
+            }
         default:
             throw new Error(`unhandled type of ${type} in productsReducer`);
     }
@@ -112,7 +118,7 @@ const toggleProductEnable = (products, product) => {
     return {...products};
 }
 export const ProductsProvider = ({children}) => {
-    const [{product, products, hidden}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const [{product, products, hidden, editProductId}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
 
     const setProducts = (products) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.SET_PRODUCTS, products));
@@ -147,26 +153,25 @@ export const ProductsProvider = ({children}) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE_STOP));
     }
 
+    const editProduct = (productId) => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.EDIT_PRODUCT, productId));
+    }
+
     useEffect(()=>{
         onCollectionChangedListener('products', (productsMap)=>{
             setProducts(productsMap);
         });
-        // const getProductMap = async () =>{
-        //     const productMap = await getCollectionAndDocuments('products');
-        //     setProducts(productMap);
-        //     console.log("loadintg...",productMap);
-        // }
-
-        // getProductMap()
     }, []);
     const value = {
         product,
         products, 
         hidden,
+        editProductId,
         deleteProduct,
         updateProduct,
         clearProduct,
         addProduct,
+        editProduct,
         toggleProductEditHidden,
         toggleProductEnable,
         toggleProductEnableStop

@@ -10,31 +10,29 @@ const textDisableStyle = css`
     text-decoration: line-through;
     text-decoration-thickness: 3px;  
 `;
-export const ProductLineItemContainer = styled.div`
+export const ProductLineInputContainer = styled.form`
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
 `;
 
-export const CategoryContainer = styled.span`
+export const CategoryContainer = styled.input`
+    width: 30%;
+`;
+
+export const NameContainer = styled.input`
     width: 30%;
     text-align: left;
     ${getIsEnable}
 `;
 
-export const NameContainer = styled.span`
-    width: 30%;
-    text-align: left;
-    ${getIsEnable}
-`;
-
-export const PriceContainer = styled.span`
+export const PriceContainer = styled.input`
     width: 10%;
     text-align: left;
     ${getIsEnable}
 `;
 
-export const StockContainer = styled.span`
+export const StockContainer = styled.input`
     width: 10%;
     text-align: right;
     padding-right: 20px;

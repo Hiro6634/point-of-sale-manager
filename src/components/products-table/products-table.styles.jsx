@@ -35,6 +35,12 @@ export const PriceSpan = styled.span`
     border: 0px solid black;
 `;
 
+export const StockSpan = styled.span`
+    width: 10%;
+    text-align: left;
+    border: 0px solid black;
+`;
+
 export const EnableSpan = styled.span`
     width: 15%;
     text-align: left;
