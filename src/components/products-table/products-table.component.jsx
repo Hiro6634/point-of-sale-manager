@@ -1,6 +1,8 @@
 import useProducts from '../../context/products.context';
-import ProductLineItem from '../product-line-item/product-line-item.component';
-import ProductLineInput from '../product-line-input/product-line-input.component';
+import useCategories from '../../context/categories.context';
+import { useEffect } from 'react';
+// import ProductLineItem from '../product-line-item/product-line-item.component';
+// import ProductLineInput from '../product-line-input/product-line-input.component';
 import { 
     ProductTableContainer,
     ProductTableHeaderContainer,
@@ -13,9 +15,15 @@ import {
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
-    const { products } = useProducts();
+    const { products, sortProductsByCategories } = useProducts();
+    const { categories } = useCategories();
+
+    useEffect(()=>{
+        sortProductsByCategories(categories);
+    },[categories])
 
     console.log(products);
+    console.log(categories);
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>
@@ -28,7 +36,7 @@ const ProductsTable = () => {
             <ProductTableBodyContainer>
                 {
                     products.map((product) => {
-                        return(<p>{product.name}</p>)
+                        return(<p key={product.id}>{product.name}</p>)
                     })
                 }
             {/* {
