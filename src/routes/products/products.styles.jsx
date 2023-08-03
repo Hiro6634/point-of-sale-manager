@@ -8,6 +8,12 @@ export const ProductsContainer = styled.div`
     padding: 5px 20px;
 `;
 
+export const ProductsTitleContainer = styled.h2`
+    font-weight: bold;
+`;
+
 export const ButtonContainer = styled.div`
-    width: 200px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
 `;

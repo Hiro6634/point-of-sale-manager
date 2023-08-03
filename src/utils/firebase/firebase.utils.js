@@ -94,10 +94,12 @@ export const getCollectionAndDocuments = async (collectionName) => {
     const querySnapshot = await getDocs(q);
     const productMap = querySnapshot.docs.reduce((acc, docSnapshot)=> {
         const { id } = docSnapshot.data();
-        acc[id.toLowerCase()] = docSnapshot.data();
+       // acc.push(docSnapshot.data());
+//        acc[id.toLowerCase()] = docSnapshot.data();
         return acc;
-    }, {}); 
+    }, []); 
 
+    console.log("FIREBASE", productMap);
     return productMap;
 }
 
@@ -164,9 +166,10 @@ export const onCollectionChangedListener = (collectionName, callback) => {
     onSnapshot(collectionRef, (querySnapshot) =>{
         const collectionMap = querySnapshot.docs.reduce((acc, docSnapshot)=> {
             const { id } = docSnapshot.data();
-            acc[id.toLowerCase()] = docSnapshot.data();
+            acc.push(docSnapshot.data());
+//            acc[id.toLowerCase()] = docSnapshot.data();
             return acc;
-        }, {}); 
+        }, []); 
         callback(collectionMap);
     });
 }

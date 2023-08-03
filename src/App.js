@@ -5,9 +5,9 @@ import Navigation from './routes/navigation/navigation.component';
 import Authentication from './routes/authentication/authentication.component';
 import Products from './routes/products/products.component';
 
-const Stock = () => (
+const Sales = () => (
   <div>
-    <h1>Stock Page</h1>
+    <h1>Sales  Page</h1>
   </div>
 );
 
@@ -27,8 +27,9 @@ const  App = () => {
   return(
     <Routes>
       <Route path='/' element={<Navigation/>}>
-        <Route index  element={<Home/>}/>
-        <Route path='stock' element={<Stock/>}/>
+        {/* <Route index  element={<Home/>}/> */}
+        <Route index  element={<Products/>}/>
+        <Route path='sales' element={<Sales/>}/>
         <Route path='products' element={<Products/>}/>
         <Route path='users' element={<UserMgm/>}/>
         <Route path='help' element={<Help/>}/>

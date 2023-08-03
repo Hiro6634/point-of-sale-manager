@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
 
 import { 
-    getCollectionAndDocuments, 
     removeProduct,
     insertProduct,
     updateProduct,
@@ -22,16 +21,10 @@ const PRODUCTS_ACTION_TYPES = {
     DELETE_PRODUCT: 'DELETE_PRODUCT',
     UPDATE_PRODUCT: 'UPDATE_PRODUCT',
     ADD_PRODUCT: 'ADD_PRODUCT',
-    TOGGLE_EDIT_PRODUCT_HIDDEN: 'TOGGLE_EDIT_PRODUCT_HIDDEN',
-    TOGGLE_PRODUCT_ENABLE: 'TOGGLE_PRODUCT_ENABLE',
-    TOGGLE_PRODUCT_ENABLE_STOP: 'TOGGLE_PRODUCT_ENABLE_STOP',
-    EDIT_PRODUCT: "EDIT_PRODUCT",
 };
 
 const INITIAL_STATE = {
     products: [],
-    hidden: true,
-    product: null
 };
 
 const productsReducer = (state,action) => {
@@ -63,25 +56,6 @@ const productsReducer = (state,action) => {
                 ...state,
                 product: payload
             };
-        case PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN:
-            return {
-                ...state,
-                hidden: !state.hidden
-            }
-        case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE:
-            return {
-                ...state,
-                products: toggleProductEnable(state.products, payload)
-            }
-        case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE_STOP:
-            return {
-                ...state
-            }
-        case PRODUCTS_ACTION_TYPES.EDIT_PRODUCT:
-            return {
-                ...state,
-                editProductId: payload 
-            }
         default:
             throw new Error(`unhandled type of ${type} in productsReducer`);
     }
@@ -111,12 +85,6 @@ const addProduct = (products, productToAdd) => {
     return {...products};
 }
 
-const toggleProductEnable = (products, product) => {
-    product.enable = !product.enable;
-    updateProduct(product.id, {enable: product.enable});
-
-    return {...products};
-}
 export const ProductsProvider = ({children}) => {
     const [{product, products, hidden, editProductId}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
 
@@ -141,40 +109,17 @@ export const ProductsProvider = ({children}) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.ADD_PRODUCT, product));
     }
 
-    const toggleProductEditHidden = () => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_EDIT_PRODUCT_HIDDEN));
-    }
-
-    const toggleProductEnable = () => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE));
-    }
-
-    const toggleProductEnableStop = () => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT_ENABLE_STOP));
-    }
-
-    const editProduct = (productId) => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.EDIT_PRODUCT, productId));
-    }
-
     useEffect(()=>{
         onCollectionChangedListener('products', (productsMap)=>{
             setProducts(productsMap);
         });
     }, []);
     const value = {
-        product,
         products, 
-        hidden,
-        editProductId,
         deleteProduct,
         updateProduct,
         clearProduct,
         addProduct,
-        editProduct,
-        toggleProductEditHidden,
-        toggleProductEnable,
-        toggleProductEnableStop
     };
 
     return(

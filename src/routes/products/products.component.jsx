@@ -1,34 +1,26 @@
 import ProductsTable from '../../components/products-table/products-table.component';
 import Button from '../../components/button/button.component';
-import useProducts from '../../context/products.context';
-import AddOrUpdateProduct from '../../components/add-or-update-product/add-or-update-product.component';
+// import useProducts from '../../context/products.context';
+//import AddOrUpdateProduct from '../../components/add-or-update-product/add-or-update-product.component';
 import { 
     ButtonContainer, 
-    ProductsContainer 
+    ProductsContainer,
+    ProductsTitleContainer
 } from './products.styles';
 
 const Products = () => {
-    const {
-        hidden,
-        clearProduct,
-        toggleProductEditHidden
-    } = useProducts();
+    // const {
+    //     hidden,
+    //     clearProduct,
+    //     toggleProductEditHidden
+    // } = useProducts();
     return( 
         <ProductsContainer>
-            <h2>PRODUCTOS</h2>
+            <ProductsTitleContainer>PRODUCTOS</ProductsTitleContainer>
             <ProductsTable/>
             <ButtonContainer>
-                <Button onClick={()=>{
-                    clearProduct();
-                    toggleProductEditHidden();
-                    }}
-                >
-                    Agregar
-                </Button> 
+                <Button onClick={()=>{console.log("Add Product")}}>Agregar</Button> 
             </ButtonContainer>
-            {
-                !hidden?<AddOrUpdateProduct/>:null
-            }
         </ProductsContainer>
     )
 };

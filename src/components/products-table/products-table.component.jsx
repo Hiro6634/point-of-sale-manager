@@ -13,7 +13,9 @@ import {
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
-    const {products, editProductId} = useProducts();
+    const { products } = useProducts();
+
+    console.log(products);
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>
@@ -24,7 +26,12 @@ const ProductsTable = () => {
                 <ControlsSpan>Editar/Borrar</ControlsSpan>
             </ProductTableHeaderContainer>
             <ProductTableBodyContainer>
-            {
+                {
+                    products.map((product) => {
+                        return(<p>{product.name}</p>)
+                    })
+                }
+            {/* {
                 Object.keys(products).map((key)=>{
                     const { id } = products[key];
                     if( editProductId === id){
@@ -38,7 +45,7 @@ const ProductsTable = () => {
                         )
                     )
                 }            
-            )}
+            )} */}
             </ProductTableBodyContainer>
         </ProductTableContainer>
     );

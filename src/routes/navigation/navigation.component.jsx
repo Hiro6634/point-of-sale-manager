@@ -17,11 +17,11 @@ const Navigation = () => {
                     <CrwnLogo className='logo'/>
                 </Link>
                 <div className='nav-links-container'>
-                    <Link className='nav-link' to='/stock'>
-                        STOCK
-                    </Link> 
                     <Link className='nav-link' to='/products'>
                         PRODUCTOS
+                    </Link> 
+                    <Link className='nav-link' to='/sales'>
+                        VENTAS
                     </Link> 
                     <Link className='nav-link' to='/users'>
                         USUARIOS
