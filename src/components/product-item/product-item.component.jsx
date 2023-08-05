@@ -1,5 +1,10 @@
 import './product-item.styles.scss';
 
+import {ReactComponent as IconDelete} from '../../assets/trash-outline.svg';
+import {ReactComponent as IconEdit} from '../../assets/create-outline.svg';
+import {ReactComponent as IconTrue} from '../../assets/checkmark-outline.svg';
+import {ReactComponent as IconFalse} from '../../assets/close-outline.svg';
+
 import { 
     ProductItemContainer,
     CategoryContainer,
@@ -7,7 +12,8 @@ import {
     PriceContainer,
     StockContainer,
     EnableContainer,
-    ControlsContainer
+    ControlsContainer,
+    IconContainer
 } from './product-item.styles';
 
 const ProductItem = ({product}) => {
@@ -18,10 +24,14 @@ const ProductItem = ({product}) => {
             <NameContainer>{name}</NameContainer>
             <PriceContainer>${price}</PriceContainer>
             <StockContainer>{stock}</StockContainer>
-            <EnableContainer>{enable?"True":"False"}</EnableContainer>
+            <EnableContainer color={enable?'green':'red'}>
+                <IconContainer  onClick={()=>{console.log(`Click ${name}`)}}>
+                {enable?<IconTrue/>:<IconFalse/>}
+                </IconContainer>
+            </EnableContainer>
             <ControlsContainer>
-                <span className="product-item">edit</span>
-                <span className="product-item">del</span>
+                <IconContainer  onClick={()=>{console.log(`Edit ${name}`)}}><IconEdit/></IconContainer>
+                <IconContainer  onClick={()=>{console.log(`Delete ${name}`)}}><IconDelete/></IconContainer>
             </ControlsContainer>
         </ProductItemContainer>
     );

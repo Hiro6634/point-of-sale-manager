@@ -20,38 +20,37 @@ export const ProductTableHeaderContainer = styled.div`
 export const CategoryContainer = styled.span`
     width: 30%;
     text-align: left;
-    border: 0px solid black;
+    /* border: 1px solid black; */
 `;
 
 export const NameContainer = styled.span`
     width: 30%;
     text-align: left;
-    border: 0px solid black;
+    /* border: 1px solid black; */
 `;
 
 export const PriceContainer = styled.span`
     width: 10%;
-    text-align: left;
-    border: 0px solid black;
+    text-align: center;
+    /* border: 1px solid black; */
 `;
 
 export const StockContainer = styled.span`
     width: 10%;
-    text-align: left;
-    border: 0px solid black;
+    text-align: center;
+    /* border: 1px solid black; */
 `;
 
 export const EnableContainer = styled.span`
     width: 15%;
-    text-align: left;
-    cursor: pointer;
-    border: 0px solid black;
+    text-align: center;
+    /* border: 1px solid black; */
 `;
 
 export const ControlsContainer = styled.span`
     width: 20%;
-    cursor: pointer;
-    border: 0px solid black;
+    text-align: center;
+    /* border: 0px solid black; */
 `;
 
 export const ProductTableBodyContainer = styled.div`
