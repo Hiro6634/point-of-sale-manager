@@ -1,17 +1,19 @@
 import useProducts from '../../context/products.context';
 import useCategories from '../../context/categories.context';
 import { useEffect } from 'react';
+import ProductItem from '../product-item/product-item.component';
 // import ProductLineItem from '../product-line-item/product-line-item.component';
 // import ProductLineInput from '../product-line-input/product-line-input.component';
 import { 
     ProductTableContainer,
     ProductTableHeaderContainer,
-    CategorySpan,
-    NameSpan,
-    StockSpan,
-    EnableSpan,
-    ControlsSpan,
-    ProductTableBodyContainer
+    CategoryContainer,
+    NameContainer,
+    StockContainer,
+    EnableContainer,
+    ControlsContainer,
+    ProductTableBodyContainer,
+    PriceContainer
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
@@ -27,17 +29,19 @@ const ProductsTable = () => {
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>
-                <CategorySpan>Categoria</CategorySpan>    
-                <NameSpan>Producto</NameSpan>
-                <StockSpan>Stock</StockSpan>
-                <EnableSpan>Habilitado</EnableSpan>
-                <ControlsSpan>Editar/Borrar</ControlsSpan>
+                <CategoryContainer>Categoria</CategoryContainer>    
+                <NameContainer>Producto</NameContainer>
+                <PriceContainer>Precio</PriceContainer>
+                <StockContainer>Stock</StockContainer>
+                <EnableContainer>Habilitado</EnableContainer>
+                <ControlsContainer>Editar/Borrar</ControlsContainer>
             </ProductTableHeaderContainer>
             <ProductTableBodyContainer>
                 {
-                    products.map((product) => {
-                        return(<p key={product.id}>{product.name}</p>)
-                    })
+                    // products.map((product) => {
+                    //     return(<p key={product.id}>{product.name}</p>)
+                    // })
+                    products.map((product)=>(<ProductItem product={product}/>))
                 }
             {/* {
                 Object.keys(products).map((key)=>{
