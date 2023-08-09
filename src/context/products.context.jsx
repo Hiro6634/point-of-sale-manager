@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
+import useCategories from './categories.context';
 
 import { 
     removeProduct,
     insertProduct,
     updateProduct,
-    onCollectionChangedListener
+    onProductsChangedListener,
+    getProdutcsOrderedByCategory
 } from '../utils/firebase/firebase.utils';
 
 import { createAction } from '../utils/reducer/reducer.utils';
@@ -17,11 +19,11 @@ export const ProductsContext = createContext({
 
 const PRODUCTS_ACTION_TYPES = {
     SET_PRODUCTS:'SET_PRODUCTS',
-    SORT_PRODUCTS_BY_CATEGORIES: 'SORT_PRODUCTS_BY_CATEGORIES',
     CLEAR_PRODUCT: 'CLEAR_PRODUCT',
     DELETE_PRODUCT: 'DELETE_PRODUCT',
     UPDATE_PRODUCT: 'UPDATE_PRODUCT',
     ADD_PRODUCT: 'ADD_PRODUCT',
+    TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
 };
 
 const INITIAL_STATE = {
@@ -57,11 +59,12 @@ const productsReducer = (state,action) => {
                 ...state,
                 product: payload
             };
-        case PRODUCTS_ACTION_TYPES.SORT_PRODUCTS_BY_CATEGORIES:
+        case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT:
             return{
                 ...state,
-                products: sortProductsByCategories(state.products, payload)
+                products: toggleProduct(state.products, payload)
             }
+        
         default:
             throw new Error(`unhandled type of ${type} in productsReducer`);
     }
@@ -91,23 +94,18 @@ const addProduct = (products, productToAdd) => {
     return {...products};
 }
 
-const sortProductsByCategories = (products, categories) => {
-    console.log("Sorting...");
-    const sortedProducts = categories.sort((a,b)=>a.order-b.order).reduce((acc, category)=>{
-        products.filter(product=>product.category.toUpperCase() === category.name.toUpperCase()).map(product=>{
-            acc.push({
-                color: category.color,
-                ...product
-            });
-            return acc;
-        })
-        return acc;
-    },[]);
-    return sortedProducts;
+const toggleProduct = (products, product) => {
+    const theProduct = products.filter(p=>p.id.toLowerCase() === product.id.toLowerCase());
+
+    updateProduct(theProduct[0].id, {enable: !theProduct[0].enable});
+
+    return products;
 }
 
+
 export const ProductsProvider = ({children}) => {
-    const [{product, products, hidden, editProductId}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const [{products}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const {categories} = useCategories();
 
     const setProducts = (products) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.SET_PRODUCTS, products));
@@ -129,22 +127,32 @@ export const ProductsProvider = ({children}) => {
     const addProduct = (product) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.ADD_PRODUCT, product));
     }
-    const sortProductsByCategories = (categories) => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.SORT_PRODUCTS_BY_CATEGORIES, categories));
+    const toggleProduct = (product) => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, product));
     }
 
     useEffect(()=>{
-        onCollectionChangedListener('products', (productsMap)=>{
-            setProducts(productsMap);
+        onProductsChangedListener((productsMap)=>{
+           setProducts(productsMap);
         });
     }, []);
+
+    const loadProducts = async()=>{
+        const products = await getProdutcsOrderedByCategory();
+        setProducts(products);
+    } 
+    useEffect(()=>{
+        loadProducts();
+    },[categories]);
+    
     const value = {
         products, 
-        sortProductsByCategories,
+        setProducts,
         deleteProduct,
         updateProduct,
         clearProduct,
         addProduct,
+        toggleProduct,
     };
 
     return(

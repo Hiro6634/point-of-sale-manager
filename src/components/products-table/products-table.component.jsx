@@ -1,7 +1,6 @@
 import useProducts from '../../context/products.context';
-import useCategories from '../../context/categories.context';
-import { useEffect } from 'react';
 import ProductItem from '../product-item/product-item.component';
+import { getProdutcsOrderedByCategory } from '../../utils/firebase/firebase.utils';
 // import ProductLineItem from '../product-line-item/product-line-item.component';
 // import ProductLineInput from '../product-line-input/product-line-input.component';
 import { 
@@ -17,15 +16,8 @@ import {
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
-    const { products, sortProductsByCategories } = useProducts();
-    const { categories } = useCategories();
+    const { products } = useProducts();
 
-    useEffect(()=>{
-        sortProductsByCategories(categories);
-    },[categories])
-
-    console.log(products);
-    console.log(categories);
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>
@@ -38,26 +30,10 @@ const ProductsTable = () => {
             </ProductTableHeaderContainer>
             <ProductTableBodyContainer>
                 {
-                    // products.map((product) => {
-                    //     return(<p key={product.id}>{product.name}</p>)
-                    // })
-                    products.map((product)=>(<ProductItem product={product}/>))
+                    products.length !== 0?(
+                    products.map((product)=>(<ProductItem key={product.id} product={product}/>))
+                    ):null
                 }
-            {/* {
-                Object.keys(products).map((key)=>{
-                    const { id } = products[key];
-                    if( editProductId === id){
-                        console.log("EDIT " + products[key].id);
-                    }
-                    return(
-                        (id===editProductId)?(
-                            <ProductLineInput key={id} product={products[key]}/>
-                        ):(
-                            <ProductLineItem key={id} product={products[key]}/>
-                        )
-                    )
-                }            
-            )} */}
             </ProductTableBodyContainer>
         </ProductTableContainer>
     );

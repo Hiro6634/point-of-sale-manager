@@ -17,9 +17,9 @@ import {
     setDoc,
     collection,
     writeBatch,
+    onSnapshot,
     query,
-    getDocs,
-    onSnapshot
+    getDocs
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -74,12 +74,9 @@ export const insertProduct = async (product) => {
 
 export const updateProduct = async (docId, updateDoc) => {
     try{
-        console.log("__UPDATE__ ID: " + docId);
         const docRef = doc(db, "products",docId);
         const batch = writeBatch(db);
         const docSnapshot = await getDoc(docRef);
-        console.log("docSnapshot:", docSnapshot);
-        console.log("docSnapshot Exists:"+ docSnapshot.exists?"TRUE":"FALSE");
         batch.update(docRef, updateDoc);
         await batch.commit();
     } catch( error ){
@@ -87,21 +84,6 @@ export const updateProduct = async (docId, updateDoc) => {
     }
 }
 
-export const getCollectionAndDocuments = async (collectionName) => {
-    const collectionRef = collection(db, collectionName);
-    const q = query(collectionRef);
-
-    const querySnapshot = await getDocs(q);
-    const productMap = querySnapshot.docs.reduce((acc, docSnapshot)=> {
-        const { id } = docSnapshot.data();
-       // acc.push(docSnapshot.data());
-//        acc[id.toLowerCase()] = docSnapshot.data();
-        return acc;
-    }, []); 
-
-    console.log("FIREBASE", productMap);
-    return productMap;
-}
 
 export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
     const collectionRef = collection(db, collectionKey);
@@ -159,15 +141,68 @@ export const signOutUser = async () => await signOut(auth);
 export const onAuthStateChangedListener = (callback) => 
     onAuthStateChanged(auth, callback);
 
+export const getCollectionAndDocuments = async (collectionName) => {
+    const collectionRef = collection(db, collectionName);
+    const q = query(collectionRef);
+
+    const querySnapshot = await getDocs(q);
+    const collectionMap = querySnapshot.docs.reduce((acc, docSnapshot)=> {
+        acc.push(docSnapshot.data());
+        return acc;
+    }, []); 
+
+    return collectionMap;
+}
+    
 export const onCollectionChangedListener = (collectionName, callback) => {
     const collectionRef = collection(db, collectionName);
-
+        
     onSnapshot(collectionRef, (querySnapshot) =>{
         const collectionMap = querySnapshot.docs.reduce((acc, docSnapshot)=> {
-            const { id } = docSnapshot.data();
             acc.push(docSnapshot.data());
             return acc;
         }, []); 
         callback(collectionMap);
+    });
+}
+
+const getProductsSortByCategory = async (querySnapshot) =>  {
+    const unorderedProductsMap = querySnapshot.docs.reduce((acc, docSnapshot)=>{
+        acc.push(docSnapshot.data());
+        return acc;
+    },[]);
+
+    const categoryMap = await getCollectionAndDocuments("categories");
+    if(categoryMap === undefined || categoryMap.length === 0 )
+        return unorderedProductsMap;
+
+    const productstMap = categoryMap.sort((a,b)=>a.order-b.order).reduce((acc, category)=>{
+
+        unorderedProductsMap.filter(product=>product.category.toLowerCase() === category.name.toLowerCase()).map(product=>{
+            acc.push({
+                color: category.color,
+                ...product
+            });
+            return acc;
+        });
+        return acc;
+    },[]);
+
+    return productstMap;
+}
+
+export const getProdutcsOrderedByCategory = async () => {
+    const productsRef = collection(db, "products");
+    const q = query(productsRef);
+    const querySnapshot = await getDocs(q);
+
+    return getProductsSortByCategory(querySnapshot);
+}
+
+export const onProductsChangedListener = (callback) => {
+    const productsRef = collection(db, "products");
+
+    onSnapshot(productsRef, async (querySnapShot) => {
+        callback(await getProductsSortByCategory(querySnapShot));
     });
 }

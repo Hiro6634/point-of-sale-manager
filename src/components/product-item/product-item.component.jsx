@@ -1,3 +1,4 @@
+import useProducts from '../../context/products.context';
 import './product-item.styles.scss';
 
 import {ReactComponent as IconDelete} from '../../assets/trash-outline.svg';
@@ -18,6 +19,8 @@ import {
 
 const ProductItem = ({product}) => {
     const {category, name, price, stock, enable} = product;
+    const {toggleProduct} = useProducts();
+
     return(
         <ProductItemContainer>
             <CategoryContainer>{category}</CategoryContainer>
@@ -25,7 +28,7 @@ const ProductItem = ({product}) => {
             <PriceContainer>${price}</PriceContainer>
             <StockContainer>{stock}</StockContainer>
             <EnableContainer color={enable?'green':'red'}>
-                <IconContainer  onClick={()=>{console.log(`Click ${name}`)}}>
+                <IconContainer  onClick={()=>{toggleProduct(product)}}>
                 {enable?<IconTrue/>:<IconFalse/>}
                 </IconContainer>
             </EnableContainer>
