@@ -76,7 +76,6 @@ export const updateProduct = async (docId, updateDoc) => {
     try{
         const docRef = doc(db, "products",docId);
         const batch = writeBatch(db);
-        const docSnapshot = await getDoc(docRef);
         batch.update(docRef, updateDoc);
         await batch.commit();
     } catch( error ){

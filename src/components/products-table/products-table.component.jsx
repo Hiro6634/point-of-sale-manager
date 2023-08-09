@@ -1,8 +1,6 @@
 import useProducts from '../../context/products.context';
 import ProductItem from '../product-item/product-item.component';
-import { getProdutcsOrderedByCategory } from '../../utils/firebase/firebase.utils';
-// import ProductLineItem from '../product-line-item/product-line-item.component';
-// import ProductLineInput from '../product-line-input/product-line-input.component';
+
 import { 
     ProductTableContainer,
     ProductTableHeaderContainer,

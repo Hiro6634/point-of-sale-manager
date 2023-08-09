@@ -24,6 +24,7 @@ const PRODUCTS_ACTION_TYPES = {
     UPDATE_PRODUCT: 'UPDATE_PRODUCT',
     ADD_PRODUCT: 'ADD_PRODUCT',
     TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
+    EDIT_PRODUCT: 'EDIT_PRODUCT',
 };
 
 const INITIAL_STATE = {
@@ -137,11 +138,18 @@ export const ProductsProvider = ({children}) => {
         });
     }, []);
 
-    const loadProducts = async()=>{
-        const products = await getProdutcsOrderedByCategory();
-        setProducts(products);
-    } 
     useEffect(()=>{
+        async function loadProducts(){
+            try{
+                const products = await getProdutcsOrderedByCategory();
+
+                setProducts(products);
+
+            }catch(error){
+                console.error(error);
+            }
+        } 
+
         loadProducts();
     },[categories]);
     
