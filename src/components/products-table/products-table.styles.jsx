@@ -59,5 +59,3 @@ export const ProductTableBodyContainer = styled.div`
     padding: 5px 0px;
 
 `;
-
-

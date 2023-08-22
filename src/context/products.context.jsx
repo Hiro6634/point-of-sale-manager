@@ -24,11 +24,12 @@ const PRODUCTS_ACTION_TYPES = {
     UPDATE_PRODUCT: 'UPDATE_PRODUCT',
     ADD_PRODUCT: 'ADD_PRODUCT',
     TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
-    EDIT_PRODUCT: 'EDIT_PRODUCT',
+    NEW_PRODUCT: 'NEW_PRODUCT',
 };
 
 const INITIAL_STATE = {
     products: [],
+    edit: false
 };
 
 const productsReducer = (state,action) => {
@@ -65,7 +66,12 @@ const productsReducer = (state,action) => {
                 ...state,
                 products: toggleProduct(state.products, payload)
             }
-        
+        case PRODUCTS_ACTION_TYPES.NEW_PRODUCT:
+            return{
+                ...state,
+                isEditable: true,
+                products: newProduct(state.products, payload)
+            }
         default:
             throw new Error(`unhandled type of ${type} in productsReducer`);
     }
@@ -103,9 +109,22 @@ const toggleProduct = (products, product) => {
     return products;
 }
 
+const newProduct = (products) => {
 
+    const newProd = products.reduce((acc, product)=>{
+        acc.push(product);
+        return acc;
+    },[]);
+    const id = Date.now().toString();
+    newProd.push({
+        id: id,
+        isEditable: true,
+    });
+    console.log("NEW PRODUCT", newProd);
+    return newProd;
+}
 export const ProductsProvider = ({children}) => {
-    const [{products}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const [{products, editable}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
     const {categories} = useCategories();
 
     const setProducts = (products) => {
@@ -131,13 +150,17 @@ export const ProductsProvider = ({children}) => {
     const toggleProduct = (product) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, product));
     }
-
+    const newProduct = (product) => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.NEW_PRODUCT, null));
+    }
+    //En el inicio establezco la funcion que monitorea cambios en la coleccion de productos
     useEffect(()=>{
         onProductsChangedListener((productsMap)=>{
            setProducts(productsMap);
         });
     }, []);
 
+    // Recargo los productos si hubo un cambio en las categorias
     useEffect(()=>{
         async function loadProducts(){
             try{
@@ -155,12 +178,14 @@ export const ProductsProvider = ({children}) => {
     
     const value = {
         products, 
+        editable,
         setProducts,
         deleteProduct,
         updateProduct,
         clearProduct,
         addProduct,
         toggleProduct,
+        newProduct,
     };
 
     return(

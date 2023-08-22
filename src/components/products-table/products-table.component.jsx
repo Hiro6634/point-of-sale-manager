@@ -14,8 +14,10 @@ import {
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
-    const { products } = useProducts();
-
+    const { 
+        products
+    } = useProducts();
+    console.log("__Render__", products);
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>
@@ -29,7 +31,10 @@ const ProductsTable = () => {
             <ProductTableBodyContainer>
                 {
                     products.length !== 0?(
-                    products.map((product)=>(<ProductItem key={product.id} product={product}/>))
+                    products.map((product)=>{
+                        console.log("NAME:" + product.name);
+                        return(<ProductItem key={product.id} product={product} isEditable={product.edit}/>)
+                    })
                     ):null
                 }
             </ProductTableBodyContainer>
