@@ -14,6 +14,7 @@ import { createAction } from '../utils/reducer/reducer.utils';
 export const ProductsContext = createContext({
     products: [],
     hidden: true,
+    editing: false,
     product: null
 });
 
@@ -25,11 +26,12 @@ const PRODUCTS_ACTION_TYPES = {
     ADD_PRODUCT: 'ADD_PRODUCT',
     TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
     NEW_PRODUCT: 'NEW_PRODUCT',
+    CANCEL_NEW_PRODUCT: 'CANCEL_NEW_PRODUCT'
 };
 
 const INITIAL_STATE = {
     products: [],
-    edit: false
+    addnew: false
 };
 
 const productsReducer = (state,action) => {
@@ -51,15 +53,19 @@ const productsReducer = (state,action) => {
                 ...state,
                 products: deleteProduct(state.products, payload)
             };
-        case PRODUCTS_ACTION_TYPES.ADD_PRODUCT:
+        case PRODUCTS_ACTION_TYPES.ADD_PRODUCT: {
+            console.log("ADD_PrODUCT");
             return {
                 ...state,
+                addnew: false,
                 products: addProduct(state.products, payload)
             };
+
+        }
         case PRODUCTS_ACTION_TYPES.UPDATE_PRODUCT:
             return {
                 ...state,
-                product: payload
+                editing: false,
             };
         case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT:
             return{
@@ -69,8 +75,12 @@ const productsReducer = (state,action) => {
         case PRODUCTS_ACTION_TYPES.NEW_PRODUCT:
             return{
                 ...state,
-                isEditable: true,
-                products: newProduct(state.products, payload)
+                addnew: true
+            }
+        case PRODUCTS_ACTION_TYPES.CANCEL_NEW_PRODUCT:
+            return {
+                ...state,
+                addnew: false
             }
         default:
             throw new Error(`unhandled type of ${type} in productsReducer`);
@@ -80,7 +90,7 @@ const productsReducer = (state,action) => {
 const deleteProduct = (products, productToDelete) => {
     console.log("Remove product:" + productToDelete.name);
     removeProduct(productToDelete);
-    return {...products};
+    return products;
 }
 
 const addProduct = (products, productToAdd) => {
@@ -90,15 +100,12 @@ const addProduct = (products, productToAdd) => {
         name: productToAdd.name,
         price: parseInt(productToAdd.price),
         stock: parseInt(productToAdd.stock),
-        warningLevel: (productToAdd.warningLevel),
-        stopLevel: parseInt(productToAdd.stopLevel),
-        sales: parseInt(productToAdd.sales),
         enable: productToAdd.enable,
-        enableStop: productToAdd.enableStop,
     }
     console.log("__ADD__:", product);
     insertProduct(product);
-    return {...products};
+
+    return products;
 }
 
 const toggleProduct = (products, product) => {
@@ -109,22 +116,24 @@ const toggleProduct = (products, product) => {
     return products;
 }
 
-const newProduct = (products) => {
-
-    const newProd = products.reduce((acc, product)=>{
-        acc.push(product);
-        return acc;
-    },[]);
-    const id = Date.now().toString();
-    newProd.push({
-        id: id,
-        isEditable: true,
-    });
-    console.log("NEW PRODUCT", newProd);
-    return newProd;
-}
+// const newProduct = (products) => {
+//     const newProd = products.reduce((acc, product)=>{
+//         acc.push(product);
+//         return acc;
+//     },[]);
+//     const id = Date.now().toString();
+//     newProd.push({
+//         id: id,
+//         name:"",
+//         category:"",
+//         price:0,
+//         stock:0,
+//         enable:false
+//     });
+//     return newProd;
+// }
 export const ProductsProvider = ({children}) => {
-    const [{products, editable}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const [{products, addnew}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
     const {categories} = useCategories();
 
     const setProducts = (products) => {
@@ -145,14 +154,19 @@ export const ProductsProvider = ({children}) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.CLEAR_PRODUCT, null));
     }
     const addProduct = (product) => {
+        console.log("_ADD_PRODUCT_", product);
         dispatch(createAction(PRODUCTS_ACTION_TYPES.ADD_PRODUCT, product));
     }
     const toggleProduct = (product) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, product));
     }
-    const newProduct = (product) => {
+    const newProduct = () => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.NEW_PRODUCT, null));
     }
+    const cancelNewProduct = () => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.CANCEL_NEW_PRODUCT, null));
+    }
+
     //En el inicio establezco la funcion que monitorea cambios en la coleccion de productos
     useEffect(()=>{
         onProductsChangedListener((productsMap)=>{
@@ -178,7 +192,7 @@ export const ProductsProvider = ({children}) => {
     
     const value = {
         products, 
-        editable,
+        addnew,
         setProducts,
         deleteProduct,
         updateProduct,
@@ -186,6 +200,7 @@ export const ProductsProvider = ({children}) => {
         addProduct,
         toggleProduct,
         newProduct,
+        cancelNewProduct,
     };
 
     return(

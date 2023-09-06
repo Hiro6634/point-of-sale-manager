@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useProducts from '../../context/products.context';
 import './product-item.styles.scss';
 
@@ -6,8 +6,8 @@ import {ReactComponent as IconDelete} from '../../assets/trash-outline.svg';
 import {ReactComponent as IconEdit} from '../../assets/create-outline.svg';
 import {ReactComponent as IconTrue} from '../../assets/checkmark-outline.svg';
 import {ReactComponent as IconFalse} from '../../assets/close-outline.svg';
-import {ReactComponent as IconSubmit} from '../../assets/checkmark-outline.svg';
-import {ReactComponent as IconCancel} from '../../assets/close-outline.svg';
+import {ReactComponent as IconSubmit} from '../../assets/save-outline.svg';
+import {ReactComponent as IconCancel} from '../../assets/close-circle-outline.svg';
 
 import { 
     ProductItemContainer,
@@ -27,14 +27,28 @@ import {
     IconSubmitContainer
 } from './product-item.styles';
 
-const ProductItem = ({product}) => {
-    const {isEditable} = product;
-    const {toggleProduct} = useProducts();
+const ProductItem = (props) => {
+    const {product, isEditable} = props;
+    const {
+        toggleProduct, 
+        addProduct, 
+        deleteProduct,
+        cancelNewProduct
+    } = useProducts();
     const [rowFields, setRowFields] = useState({
-        ...product
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        stock: product.stock,
+        enable: product.enable,
     });
-    console.log("isEditable:" +  (isEditable?"TRUE":"FALSE"));
-    
+    const [edit, setEdit] = useState({
+        edit: false
+    });
+
+    // console.log("isEditable:" + isEditable);
+    // console.log("_PRODUCT_", product)
     const handleChange = (event) => {
         const {name, value} = event.target;
         setRowFields({...rowFields, [name]: value});
@@ -42,26 +56,40 @@ const ProductItem = ({product}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('SUBMIT');
+        setEdit(false);
+        setRowFields({...rowFields, isEditable: false});
+        addProduct(rowFields);
     }
-
+    const handleProductDelete = (product)=>{
+        console.log("DELETE", product);
+        window.confirm("QUIERE ELIMINAR EL PRODUCTO " + product.name + "?" ) ?
+            deleteProduct(product)
+        :
+            console.log("CANCEL")
+    }
+    // const handleCancelAddProduct = (product) => {
+                
+    // }
+    useEffect(()=>{
+        setEdit(isEditable);
+    },[isEditable]);
     return(
         <ProductItemContainer>
         {
-            isEditable ? (
+            edit ? (
                 <ProductItemInputContainer onSubmit={handleSubmit}>
-                    <CategoryInputContainer onChange={handleChange}>{rowFields.category}</CategoryInputContainer>
-                    <NameInputContainer onChange={handleChange}>{rowFields.name}</NameInputContainer>
-                    <PriceInputContainer onChange={handleChange}>{rowFields.price}</PriceInputContainer>
-                    <StockInputContainer onChange={handleChange}>{rowFields.stock}</StockInputContainer>
+                    <CategoryInputContainer name="category" onChange={handleChange} value={rowFields.category}/>
+                    <NameInputContainer name="name" onChange={handleChange} value={rowFields.name}/>
+                    <PriceInputContainer name="price" onChange={handleChange} value={rowFields.price}/>
+                    <StockInputContainer name="stock" onChange={handleChange} value={rowFields.stock}/>
                     <EnableContainer color={rowFields.enable?'green':'red'}>
                     <IconContainer  onClick={()=>{toggleProduct(product)}}>
                         {rowFields.enable?<IconTrue/>:<IconFalse/>}
                         </IconContainer>
                     </EnableContainer>
                     <ControlsContainer>
-                        <button><IconSubmitContainer  src={IconSubmit} alt='submit' type='submit'/></button>
-                        <IconContainer  onClick={()=>{console.log(`Cancel ${rowFields.name}`)}}><IconCancel/></IconContainer>
+                        <IconSubmitContainer type='submit'><IconSubmit/></IconSubmitContainer>
+                        <IconContainer  onClick={()=>{cancelNewProduct()}}><IconCancel/></IconContainer>
                     </ControlsContainer>
                 </ProductItemInputContainer>
             ):(
@@ -77,7 +105,7 @@ const ProductItem = ({product}) => {
                     </EnableContainer>
                     <ControlsContainer>
                         <IconContainer  onClick={()=>{console.log(`Edit ${rowFields.name}`)}}><IconEdit/></IconContainer>
-                        <IconContainer  onClick={()=>{console.log(`Delete ${rowFields.name}`)}}><IconDelete/></IconContainer>
+                        <IconContainer  onClick={()=>{handleProductDelete(product)}}><IconDelete/></IconContainer>
                     </ControlsContainer>
                 </ProductItemViewContainer>
             )       

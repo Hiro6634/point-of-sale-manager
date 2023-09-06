@@ -61,6 +61,7 @@ export const removeProduct = async (product) => {
 }
 export const insertProduct = async (product) => {
     try{
+        product.id = product.name.toLowerCase().replace(' ', '_');
         console.log("ID: " + product.id);
         const docRef = doc(db, "products",product.id);
         const batch = writeBatch(db);
@@ -202,6 +203,7 @@ export const onProductsChangedListener = (callback) => {
     const productsRef = collection(db, "products");
 
     onSnapshot(productsRef, async (querySnapShot) => {
+        console.log("onSnapshot");
         callback(await getProductsSortByCategory(querySnapShot));
     });
 }

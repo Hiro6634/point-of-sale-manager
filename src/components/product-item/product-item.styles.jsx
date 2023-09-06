@@ -8,6 +8,7 @@ export const ProductItemContainer = styled.div`
 `;
 
 export const ProductItemViewContainer = styled.div`
+    background-color: cyan;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -102,8 +103,11 @@ export const IconContainer = styled.span`
     text-align: center;
 `;
 
-export const IconSubmitContainer = styled.img`
-    width: 20px;
+export const IconSubmitContainer = styled.button`
+    width: 32px;
     text-align: center;
+    border: none;
+    border: 0px;
+    background-color: transparent;
 `;
 

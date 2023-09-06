@@ -14,10 +14,22 @@ import {
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
-    const { 
-        products
-    } = useProducts();
-    console.log("__Render__", products);
+    const { products, addnew } = useProducts();
+    const newProdcut = {
+        id: "1",
+        category:"",
+        name:"",
+        price:0,
+        stock:0,
+        enable:false
+    };
+
+    console.log("PRODUCTS", products);
+    // products.map((p)=>{
+    //     console.log(p.category + " " +p.name);
+    //     return("");
+    // })
+    // console.log("RENDER PRODUCTS");
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>
@@ -29,15 +41,16 @@ const ProductsTable = () => {
                 <ControlsContainer>Editar/Borrar</ControlsContainer>
             </ProductTableHeaderContainer>
             <ProductTableBodyContainer>
-                {
-                    products.length !== 0?(
-                    products.map((product)=>{
-                        console.log("NAME:" + product.name);
-                        return(<ProductItem key={product.id} product={product} isEditable={product.edit}/>)
-                    })
-                    ):null
-                }
+            {
+                products.length !== 0?(
+                products.map((product)=>(<ProductItem key={product.id} product={product} isEditable={product.name===""}/>))):null
+            }
             </ProductTableBodyContainer>
+            {
+                addnew?(
+                   <ProductItem product={newProdcut} isEditable />
+                ):null
+            }
         </ProductTableContainer>
     );
 };
