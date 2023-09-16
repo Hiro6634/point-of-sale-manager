@@ -33,7 +33,8 @@ const ProductItem = (props) => {
         toggleProduct, 
         addProduct, 
         deleteProduct,
-        cancelNewProduct
+        cancelNewProduct,
+        editProduct
     } = useProducts();
     const [rowFields, setRowFields] = useState({
         id: product.id,
@@ -67,9 +68,10 @@ const ProductItem = (props) => {
         :
             console.log("CANCEL")
     }
-    // const handleCancelAddProduct = (product) => {
-                
-    // }
+    const handleEditProduct = (productId) => {
+        console.log("Edit Product:" + productId);
+        editProduct(productId);
+    }
     useEffect(()=>{
         setEdit(isEditable);
     },[isEditable]);
@@ -104,7 +106,7 @@ const ProductItem = (props) => {
                         </IconContainer>
                     </EnableContainer>
                     <ControlsContainer>
-                        <IconContainer  onClick={()=>{console.log(`Edit ${rowFields.name}`)}}><IconEdit/></IconContainer>
+                        <IconContainer  onClick={()=>{handleEditProduct(product.id)}}><IconEdit/></IconContainer>
                         <IconContainer  onClick={()=>{handleProductDelete(product)}}><IconDelete/></IconContainer>
                     </ControlsContainer>
                 </ProductItemViewContainer>

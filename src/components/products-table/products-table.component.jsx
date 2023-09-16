@@ -14,7 +14,11 @@ import {
 } from './products-table.styles'; 
 
 const ProductsTable = () => {
-    const { products, addnew } = useProducts();
+    const { 
+        products, 
+        addnew,
+        idProductToEdit
+    } = useProducts();
     const newProdcut = {
         id: "1",
         category:"",
@@ -23,13 +27,16 @@ const ProductsTable = () => {
         stock:0,
         enable:false
     };
-
-    console.log("PRODUCTS", products);
+    if( idProductToEdit ){
+        console.log("idPorductToEdit:" + idProductToEdit);
+    }
+        
     // products.map((p)=>{
     //     console.log(p.category + " " +p.name);
     //     return("");
     // })
     // console.log("RENDER PRODUCTS");
+
     return(
         <ProductTableContainer>
             <ProductTableHeaderContainer>
@@ -43,7 +50,15 @@ const ProductsTable = () => {
             <ProductTableBodyContainer>
             {
                 products.length !== 0?(
-                products.map((product)=>(<ProductItem key={product.id} product={product} isEditable={product.name===""}/>))):null
+                products.map((product)=>{
+                    let isEditable = false;
+                    if( idProductToEdit ){
+                        isEditable = (product.id===idProductToEdit);
+                    }
+
+                    return(<ProductItem key={product.id} product={product} isEditable={isEditable}/>)
+                })
+                ):null
             }
             </ProductTableBodyContainer>
             {

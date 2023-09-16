@@ -26,12 +26,14 @@ const PRODUCTS_ACTION_TYPES = {
     ADD_PRODUCT: 'ADD_PRODUCT',
     TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
     NEW_PRODUCT: 'NEW_PRODUCT',
-    CANCEL_NEW_PRODUCT: 'CANCEL_NEW_PRODUCT'
+    CANCEL_NEW_PRODUCT: 'CANCEL_NEW_PRODUCT',
+    EDIT_PRODUCT: 'EDIT_PRODUCT',
 };
 
 const INITIAL_STATE = {
     products: [],
-    addnew: false
+    addnew: false,
+    idProductToEdit:null
 };
 
 const productsReducer = (state,action) => {
@@ -75,12 +77,19 @@ const productsReducer = (state,action) => {
         case PRODUCTS_ACTION_TYPES.NEW_PRODUCT:
             return{
                 ...state,
-                addnew: true
+                addnew: true,
+                idProductToEdit: null
+
             }
         case PRODUCTS_ACTION_TYPES.CANCEL_NEW_PRODUCT:
             return {
                 ...state,
                 addnew: false
+            }
+        case PRODUCTS_ACTION_TYPES.EDIT_PRODUCT:
+            return{
+                ...state,
+                idProductToEdit: payload
             }
         default:
             throw new Error(`unhandled type of ${type} in productsReducer`);
@@ -132,8 +141,9 @@ const toggleProduct = (products, product) => {
 //     });
 //     return newProd;
 // }
+
 export const ProductsProvider = ({children}) => {
-    const [{products, addnew}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const [{products, addnew, idProductToEdit}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
     const {categories} = useCategories();
 
     const setProducts = (products) => {
@@ -166,7 +176,9 @@ export const ProductsProvider = ({children}) => {
     const cancelNewProduct = () => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.CANCEL_NEW_PRODUCT, null));
     }
-
+    const editProduct = (productId) => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.EDIT_PRODUCT, productId));
+    }
     //En el inicio establezco la funcion que monitorea cambios en la coleccion de productos
     useEffect(()=>{
         onProductsChangedListener((productsMap)=>{
@@ -193,6 +205,7 @@ export const ProductsProvider = ({children}) => {
     const value = {
         products, 
         addnew,
+        idProductToEdit,
         setProducts,
         deleteProduct,
         updateProduct,
@@ -201,6 +214,7 @@ export const ProductsProvider = ({children}) => {
         toggleProduct,
         newProduct,
         cancelNewProduct,
+        editProduct,
     };
 
     return(
