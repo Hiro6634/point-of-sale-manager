@@ -26,7 +26,7 @@ const PRODUCTS_ACTION_TYPES = {
     ADD_PRODUCT: 'ADD_PRODUCT',
     TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
     NEW_PRODUCT: 'NEW_PRODUCT',
-    CANCEL_NEW_PRODUCT: 'CANCEL_NEW_PRODUCT',
+    CANCEL_EDIT_PRODUCT: 'CANCEL_NEW_PRODUCT',
     EDIT_PRODUCT: 'EDIT_PRODUCT',
 };
 
@@ -81,10 +81,11 @@ const productsReducer = (state,action) => {
                 idProductToEdit: null
 
             }
-        case PRODUCTS_ACTION_TYPES.CANCEL_NEW_PRODUCT:
+        case PRODUCTS_ACTION_TYPES.CANCEL_EDIT_PRODUCT:
             return {
                 ...state,
-                addnew: false
+                addnew: false,
+                idProductToEdit: 0
             }
         case PRODUCTS_ACTION_TYPES.EDIT_PRODUCT:
             return{
@@ -117,30 +118,13 @@ const addProduct = (products, productToAdd) => {
     return products;
 }
 
-const toggleProduct = (products, product) => {
-    const theProduct = products.filter(p=>p.id.toLowerCase() === product.id.toLowerCase());
+const toggleProduct = (products, productToToggle) => {
+    const product = products.filter(p=>p.id.toLowerCase() === productToToggle.id.toLowerCase());
 
-    updateProduct(theProduct[0].id, {enable: !theProduct[0].enable});
+    updateProduct(product[0].id, {enable: !product[0].enable});
 
     return products;
 }
-
-// const newProduct = (products) => {
-//     const newProd = products.reduce((acc, product)=>{
-//         acc.push(product);
-//         return acc;
-//     },[]);
-//     const id = Date.now().toString();
-//     newProd.push({
-//         id: id,
-//         name:"",
-//         category:"",
-//         price:0,
-//         stock:0,
-//         enable:false
-//     });
-//     return newProd;
-// }
 
 export const ProductsProvider = ({children}) => {
     const [{products, addnew, idProductToEdit}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
@@ -173,8 +157,8 @@ export const ProductsProvider = ({children}) => {
     const newProduct = () => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.NEW_PRODUCT, null));
     }
-    const cancelNewProduct = () => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.CANCEL_NEW_PRODUCT, null));
+    const cancelEditProduct = () => {
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.CANCEL_EDIT_PRODUCT, null));
     }
     const editProduct = (productId) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.EDIT_PRODUCT, productId));
@@ -213,7 +197,7 @@ export const ProductsProvider = ({children}) => {
         addProduct,
         toggleProduct,
         newProduct,
-        cancelNewProduct,
+        cancelEditProduct,
         editProduct,
     };
 

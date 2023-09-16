@@ -33,7 +33,7 @@ const ProductItem = (props) => {
         toggleProduct, 
         addProduct, 
         deleteProduct,
-        cancelNewProduct,
+        cancelEditProduct,
         editProduct
     } = useProducts();
     const [rowFields, setRowFields] = useState({
@@ -62,19 +62,18 @@ const ProductItem = (props) => {
         addProduct(rowFields);
     }
     const handleProductDelete = (product)=>{
-        console.log("DELETE", product);
         window.confirm("QUIERE ELIMINAR EL PRODUCTO " + product.name + "?" ) ?
             deleteProduct(product)
         :
             console.log("CANCEL")
     }
     const handleEditProduct = (productId) => {
-        console.log("Edit Product:" + productId);
         editProduct(productId);
     }
     useEffect(()=>{
+        setRowFields(product);
         setEdit(isEditable);
-    },[isEditable]);
+    },[isEditable, product]);
     return(
         <ProductItemContainer>
         {
@@ -91,7 +90,7 @@ const ProductItem = (props) => {
                     </EnableContainer>
                     <ControlsContainer>
                         <IconSubmitContainer type='submit'><IconSubmit/></IconSubmitContainer>
-                        <IconContainer  onClick={()=>{cancelNewProduct()}}><IconCancel/></IconContainer>
+                        <IconContainer  onClick={()=>{cancelEditProduct()}}><IconCancel/></IconContainer>
                     </ControlsContainer>
                 </ProductItemInputContainer>
             ):(

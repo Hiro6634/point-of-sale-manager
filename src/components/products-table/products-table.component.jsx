@@ -27,15 +27,6 @@ const ProductsTable = () => {
         stock:0,
         enable:false
     };
-    if( idProductToEdit ){
-        console.log("idPorductToEdit:" + idProductToEdit);
-    }
-        
-    // products.map((p)=>{
-    //     console.log(p.category + " " +p.name);
-    //     return("");
-    // })
-    // console.log("RENDER PRODUCTS");
 
     return(
         <ProductTableContainer>
