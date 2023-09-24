@@ -1,47 +1,57 @@
 import { Fragment, useContext } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
-import { ReactComponent as CrwnLogo } from '../../assets/crown.svg';
+// import { ReactComponent as CrwnLogo } from '../../assets/crown.svg';
+import logo from '../../assets/ajb.png';
 
 import { UserContext } from '../../context/user.context';
 import { signOutUser } from '../../utils/firebase/firebase.utils';
-import './navigation.styles.scss';
+
+import { 
+    LogoContainer,
+    LogoImgContainer,
+    NavLink,
+    NavLinks,
+    NavigationContainer 
+} from './navigation.styles';
+// import './navigation.styles.scss';
+
 
 const Navigation = () => {
     const { currentUser } = useContext(UserContext);
 
     return(
         <Fragment>
-            <div className='navigation'>
-                <Link className='logo-container' to='/'>
-                    <CrwnLogo className='logo'/>
-                </Link>
-                <div className='nav-links-container'>
-                    <Link className='nav-link' to='/products'>
+            <NavigationContainer>
+                <LogoContainer to='/'>
+                    <LogoImgContainer src={logo} alt='logo'/>
+                </LogoContainer>
+                <NavLinks>
+                    <NavLink to='/products'>
                         PRODUCTOS
-                    </Link> 
-                    <Link className='nav-link' to='/sales'>
+                    </NavLink> 
+                    <NavLink to='/sales'>
                         VENTAS
-                    </Link> 
-                    <Link className='nav-link' to='/users'>
+                    </NavLink> 
+                    <NavLink to='/users'>
                         USUARIOS
-                    </Link> 
-                    <Link className='nav-link' to='/help'>
+                    </NavLink> 
+                    <NavLink to='/help'>
                         HELP
-                    </Link> 
+                    </NavLink> 
                     {
                         currentUser ? (
-                            <span className='nav-link' onClick={signOutUser}>
-                                SIGN OUT
-                            </span>
+                            <NavLink as='span' onClick={signOutUser}>
+                                SALIR
+                            </NavLink>
                         ):(
-                            <Link className='nav-link' to='/auth'>
-                                SIGN IN
-                            </Link> 
+                            <NavLink to='/auth'>
+                                INGRESAR
+                            </NavLink> 
                         )
                     }
-                </div>
-            </div>
+                </NavLinks>
+            </NavigationContainer>
             <Outlet/>
         </Fragment>
     );
