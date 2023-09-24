@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import useProducts from '../../context/products.context';
-import './product-item.styles.scss';
 
 import {ReactComponent as IconDelete} from '../../assets/trash-outline.svg';
 import {ReactComponent as IconEdit} from '../../assets/create-outline.svg';
