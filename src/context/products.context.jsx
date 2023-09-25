@@ -53,14 +53,14 @@ const productsReducer = (state,action) => {
         case PRODUCTS_ACTION_TYPES.DELETE_PRODUCT:
             return {
                 ...state,
-                products: deleteProduct(state.products, payload)
+                products: payload
             };
         case PRODUCTS_ACTION_TYPES.ADD_PRODUCT: {
             console.log("ADD_PrODUCT");
             return {
                 ...state,
                 addnew: false,
-                products: addProduct(state.products, payload)
+                products: payload
             };
 
         }
@@ -72,7 +72,7 @@ const productsReducer = (state,action) => {
         case PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT:
             return{
                 ...state,
-                products: toggleProduct(state.products, payload)
+                products: payload
             }
         case PRODUCTS_ACTION_TYPES.NEW_PRODUCT:
             return{
@@ -97,62 +97,58 @@ const productsReducer = (state,action) => {
     }
 }
 
-const deleteProduct = (products, productToDelete) => {
-    console.log("Remove product:" + productToDelete.name);
-    removeProduct(productToDelete);
-    return products;
-}
 
-const addProduct = (products, productToAdd) => {
-    const product = {
-        id: productToAdd.id?productToAdd.id:productToAdd.name.toLowerCase().replaceAll(' ','_'),
-        category: productToAdd.category,
-        name: productToAdd.name,
-        price: parseInt(productToAdd.price),
-        stock: parseInt(productToAdd.stock),
-        enable: productToAdd.enable,
-    }
-    console.log("__ADD__:", product);
-    insertProduct(product);
+// const toggleProduct = (products, productToToggle) => {
+//     const product = products.filter(p=>p.id.toLowerCase() === productToToggle.id.toLowerCase());
 
-    return products;
-}
+//     updateProduct(product[0].id, {enable: !product[0].enable});
 
-const toggleProduct = (products, productToToggle) => {
-    const product = products.filter(p=>p.id.toLowerCase() === productToToggle.id.toLowerCase());
-
-    updateProduct(product[0].id, {enable: !product[0].enable});
-
-    return products;
-}
+//     return products;
+// }
 
 export const ProductsProvider = ({children}) => {
-    const [{products, addnew, idProductToEdit}, dispatch] = useReducer(productsReducer, INITIAL_STATE);
+    const [state, dispatch] = useReducer(productsReducer, INITIAL_STATE);
     const {categories} = useCategories();
 
     const setProducts = (products) => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.SET_PRODUCTS, products));
     }
-    
-    const deleteProduct = (product) => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.DELETE_PRODUCT, product));
+
+    const addProduct = (productToAdd) => {
+        console.log("_ADD_PRODUCT_", productToAdd);
+        const product = {
+            id: productToAdd.id?productToAdd.id:productToAdd.name.toLowerCase().replaceAll(' ','_'),
+            category: productToAdd.category,
+            name: productToAdd.name,
+            price: parseInt(productToAdd.price),
+            stock: parseInt(productToAdd.stock),
+            enable: productToAdd.enable,
+        }
+        insertProduct(product);
+        
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.ADD_PRODUCT, state.products));
+    }
+    const deleteProduct = (productToDel) => {
+        removeProduct(productToDel);
+        dispatch(createAction(PRODUCTS_ACTION_TYPES.DELETE_PRODUCT, state.products));
     }
 
-    const updateProduct = (product) => {
-        console.log("PRODUCT TO UPDATE:" + product.name);
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.UPDATE_PRODUCT, product));
-    }
+    // const updateProduct = (product) => {
+    //     console.log("PRODUCT TO UPDATE:" + product.name);
+    //     dispatch(createAction(PRODUCTS_ACTION_TYPES.UPDATE_PRODUCT, product));
+    // }
 
     const clearProduct = () => {
         console.log("CLEAR PRODUCT");
         dispatch(createAction(PRODUCTS_ACTION_TYPES.CLEAR_PRODUCT, null));
     }
-    const addProduct = (product) => {
-        console.log("_ADD_PRODUCT_", product);
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.ADD_PRODUCT, product));
-    }
-    const toggleProduct = (product) => {
-        dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, product));
+    const toggleProduct = (productToToggle) => {
+        console.log("TOGGLE:", productToToggle);
+        const product = state.products.filter(p=>p.id.toLowerCase() === productToToggle.id.toLowerCase());
+
+        console.log("FIND PRODUCT:", product);
+        updateProduct(product[0].id, {enable: !product[0].enable});
+            dispatch(createAction(PRODUCTS_ACTION_TYPES.TOGGLE_PRODUCT, state.products));
     }
     const newProduct = () => {
         dispatch(createAction(PRODUCTS_ACTION_TYPES.NEW_PRODUCT, null));
@@ -187,9 +183,9 @@ export const ProductsProvider = ({children}) => {
     },[categories]);
     
     const value = {
-        products, 
-        addnew,
-        idProductToEdit,
+        products: state.products, 
+        addnew: state.addnew,
+        idProductToEdit: state.idProductToEdit,
         setProducts,
         deleteProduct,
         updateProduct,

@@ -57,7 +57,7 @@ export const CategoriesProvider = ({children}) =>{
 const useCategories = () => {
     const context = useContext(CategoriesContext);
     if( context === undefined){
-        throw new Error|("useCategories must be used within CategoriesContext");
+        throw new Error("useCategories must be used within CategoriesContext");
     }
     return context;
 }
