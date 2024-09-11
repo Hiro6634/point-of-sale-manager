@@ -1,5 +1,0 @@
-{
-    "javascript.preferences.quoteStyle": "single",
-    "html.completion.attributeDefaultValue": "singlequotes",
-    "prettier.singleAttributePerLine": true
-}
