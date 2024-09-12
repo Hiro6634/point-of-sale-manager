@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import { UserContext } from './context/user.context'
 import AppLayout from './layouts/AppLayout'
+import Login from './pages/Login'
 
 const HomePage = () => {
   return <div>Home Page</div> 
@@ -23,11 +25,13 @@ const HelpPage = () => {
 } 
 
 const App = () => {
+  const {currentUser} = useContext(UserContext);
 
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        <Route index element={<HomePage />} />
+        <Route index element={currentUser!= null ? <HomePage /> :<Login/>} />
+        <Route path="auth" element={<Login />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="tickets" element={<TicketsPage />} />
         <Route path="settings" element={<SettingsPage />} />

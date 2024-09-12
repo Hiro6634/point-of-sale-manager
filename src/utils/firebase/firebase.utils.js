@@ -36,7 +36,7 @@ export const auth = getAuth();
 export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
 
 export const createUserDocumentFromAuth = async (userAuth) => {
-    const userDocref = doc(db, "env/${config.FIREBASE_ENVIRONMENT}/users", userAuth.uid);
+    const userDocref = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/users`, userAuth.uid);
 
     const userSnapshot = await getDoc(userDocref);
 
@@ -61,7 +61,24 @@ export const createUserDocumentFromAuth = async (userAuth) => {
     return userDocref;
 }
 
+export const getUserDocumentFromAuth = async (userAuth) => {
+    console.log("userAuth:", userAuth);
+    const userDocRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/users`, userAuth.uid);
+    console.log("userDocRef:", userDocRef);
+    const userDocSnap = await getDoc(userDocRef);
+    console.log("userDocSnap:", userDocSnap.data());
+    if( userDocSnap.exists()){
+        console.log("UserDoc:", userDocSnap.data(), userDocSnap.data().displayName);
+        return userDocSnap.data();
+    }
+    else {
+        console.log("Missing data for user:", userDocRef);
+    }
+    return null;
+}
+
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+    //console.log(email, password);
     if (!email || !password) return;
     return await signInWithEmailAndPassword(auth, email, password);
 }
