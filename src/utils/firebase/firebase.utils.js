@@ -14,7 +14,7 @@ import {
     setDoc
 } from "firebase/firestore";
 
-import config from "./config.json";
+import config from "./../../config.json";
 
 const firebaseConfig = {
     apiKey: config.FIREBASE_API_KEY,
