@@ -8,9 +8,11 @@ import {
 } from "firebase/auth";
 
 import {
+    collection,
     doc,
     getDoc,
     getFirestore,
+    onSnapshot,
     setDoc
 } from "firebase/firestore";
 
@@ -27,14 +29,11 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore();
+const db = getFirestore(firebaseApp);
 
 const provider = new GoogleAuthProvider();
-
 export const auth = getAuth();
-
 export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
-
 export const createUserDocumentFromAuth = async (userAuth) => {
     const userDocref = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/users`, userAuth.uid);
 
@@ -84,3 +83,28 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 }
 
 export const signOutUser = async () => await auth.signOut();
+
+const getProducts = async () => {
+/*    const productsRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/products`);
+    console.log("productsRef:", productsRef);
+    const productsSnap = await getDoc(productsRef);
+    console.log("productsSnap:", productsSnap.data());
+    if( productsSnap.exists()){
+        console.log("Products:", productsSnap.data());
+        return productsSnap.data();
+    }
+    else {
+        console.log("Missing data for products:", productsRef);
+    }
+        */
+    return null;
+}
+
+export const onProductsChangedListener = (callback) => {
+    const productsRef = collection(db, `env/${config.FIREBASE_ENVIRONMENT}/products`);
+    onSnapshot(productsRef, async (querySnapshot) => {
+        const products = querySnapshot.docs.map((doc) => doc.data());
+        console.log("products:", products);
+        callback(products);
+    });
+};
