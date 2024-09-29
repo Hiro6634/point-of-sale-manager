@@ -13,7 +13,8 @@ import {
     getDoc,
     getFirestore,
     onSnapshot,
-    setDoc
+    setDoc,
+    updateDoc
 } from "firebase/firestore";
 
 import config from "./../../config.json";
@@ -104,7 +105,11 @@ export const onProductsChangedListener = (callback) => {
     const productsRef = collection(db, `env/${config.FIREBASE_ENVIRONMENT}/products`);
     onSnapshot(productsRef, async (querySnapshot) => {
         const products = querySnapshot.docs.map((doc) => doc.data());
-        console.log("products:", products);
         callback(products);
     });
 };
+
+export const updateProduct   = async (productId, updatedProduct) => {
+    const productRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/products`, productId);
+    await updateDoc(productRef, updatedProduct);
+}
