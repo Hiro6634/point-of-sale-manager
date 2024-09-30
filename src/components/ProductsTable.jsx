@@ -6,6 +6,7 @@ const ProductsTable = () => {
     const [editProduct, setEditProduct] = useState(null);
     const {
         products,
+        blankRow,
         toggleProduct
     } = useContext(ProductsContext);
     const handleEdit = (product) => {
@@ -39,7 +40,7 @@ const ProductsTable = () => {
                     {products.map((product) => (
                         <ProductsTableLine key={product.id} product={product} />
                     ))}
-
+                    {blankRow ? (<ProductsTableLine product={null} />) : null}
                 </tbody>
             </table>
         </div >

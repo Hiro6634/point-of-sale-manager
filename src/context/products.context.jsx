@@ -10,12 +10,17 @@ export const ProductsContext = createContext({
 });
 
 const INITIAL_STATE = {
-    products: []
+    products: [],
+    blankRow: false
 }
 
 const PRODUCT_ACTION_TYPES = {
     SET_PRODUCTS: 'SET_PRODUCTS',
-    TOGGLE_PRODUCT: 'TOGGLE_PRODUCT'
+    TOGGLE_PRODUCT: 'TOGGLE_PRODUCT',
+    ADD_PRODUCT: 'ADD_PRODUCT',
+    REMOVE_PRODUCT: 'REMOVE_PRODUCT',
+    UPDATE_PRODUCT: 'UPDATE_PRODUCT',
+    ADD_BLANK_PRODUCT: 'ADD_BLANK_PRODUCT'
 }
 
 const productReducer = (state, action) => {
@@ -30,6 +35,11 @@ const productReducer = (state, action) => {
             return {
                 ...state,
                 products: toggleProduct(state, payload)
+            }
+        case PRODUCT_ACTION_TYPES.ADD_BLANK_PRODUCT:
+            return {
+                ...state,
+                blankRow: true
             }
         default:
             throw new Error(`Unhandled type ${type} in productReducer`);
@@ -82,8 +92,12 @@ export const ProductsProvider = ({ children }) => {
         dispatch(createAction(PRODUCT_ACTION_TYPES.TOGGLE_PRODUCT, productId))
     }
 
+    const addBlankProduct = () => {
+        dispatch(createAction(PRODUCT_ACTION_TYPES.ADD_BLANK_PRODUCT))
+    }
     const value = {
         products: state.products,
+        blankRow: state.blankRow,
         setProducts,
         toggleProduct
     };
