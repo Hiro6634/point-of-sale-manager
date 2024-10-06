@@ -111,5 +111,11 @@ export const onProductsChangedListener = (callback) => {
 
 export const updateProduct   = async (productId, updatedProduct) => {
     const productRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/products`, productId);
-    await updateDoc(productRef, updatedProduct);
+    const productSnap = await getDoc(productRef);
+    if (productSnap.exists()) {
+        await updateDoc(productRef, updatedProduct);
+    } else {
+        // add new doc
+        await setDoc(productRef, updatedProduct);
+    }
 }

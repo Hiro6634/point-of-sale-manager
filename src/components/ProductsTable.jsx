@@ -1,28 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ProductsContext } from "../context/products.context";
 import ProductsTableLine from "./ProductsTableLine";
 
 const ProductsTable = () => {
-    const [editProduct, setEditProduct] = useState(null);
     const {
         products,
-        blankRow,
-        toggleProduct
+        blankRow
     } = useContext(ProductsContext);
-    const handleEdit = (product) => {
-        console.log("Edit:", product.name);
-        setEditProduct(product);
-    }
-    const handleDelete = (product) => {
-        console.log("Delete:", product.name);
-    }
-    const handleToggle = (product) => {
-        toggleProduct(product.id);
-    }
-    const handleChange = (event) => {
-        const { name, value } = event.target;
 
-    }
+
     return (
         <div className="w-full flex flex-col items-start">
             <table className="w-full">

@@ -34,47 +34,44 @@ const productReducer = (state, action) => {
         case PRODUCT_ACTION_TYPES.TOGGLE_PRODUCT:
             return {
                 ...state,
-                products: toggleProduct(state, payload)
+                products: toggleProduct(state.products, payload)
             }
         case PRODUCT_ACTION_TYPES.ADD_BLANK_PRODUCT:
             return {
                 ...state,
                 blankRow: true
             }
+        case PRODUCT_ACTION_TYPES.UPDATE_PRODUCT:
+            return {
+                ...state,
+                products: updateItem(state.products, payload)
+            }
         default:
             throw new Error(`Unhandled type ${type} in productReducer`);
     }
 }
 
-const toggleProduct = (state, productId) => {
-    const updatedProduct = state.products.find((product) => product.id === productId);
-    updatedProduct.enable = !updatedProduct.enable;
-    updateProduct(productId, updatedProduct).then(() => {
-        const updatedProducts = state.products.map((product) => {
-            if (product.id === productId) {
-                return updatedProduct;
-            }
-            return product;
-        });
-        return {
-            ...state,
-            products: updatedProducts
-        };
-    });
-
-    const products = state.products.map((product) => {
+const toggleProduct = (products, productId) => {
+    const updatedProducts = products.map((product) => {
         if (product.id === productId) {
             return {
                 ...product,
                 enable: !product.enable
             }
-            updateProduct(product);
         }
         return product;
-    })
-    return products;
+    });
+    updateProduct(productId, updatedProducts.find((product) => product.id === productId));
+    return updatedProducts;
 }
 
+const updateItem = (products, updatedProduct) => {
+    const newProducts = products.map((product) =>
+        (product.id === updatedProduct.id) ? updatedProduct : product
+    );
+    updateProduct(updatedProduct.id, updatedProduct);
+    return newProducts
+}
 
 export const ProductsProvider = ({ children }) => {
     const [state, dispatch] = useReducer(productReducer, INITIAL_STATE);
@@ -93,13 +90,20 @@ export const ProductsProvider = ({ children }) => {
     }
 
     const addBlankProduct = () => {
-        dispatch(createAction(PRODUCT_ACTION_TYPES.ADD_BLANK_PRODUCT))
+        console.log("Add blank product");
+        dispatch(createAction(PRODUCT_ACTION_TYPES.ADD_BLANK_PRODUCT));
+    }
+
+    const updateProduct = (updatedProduct) => {
+        dispatch(createAction(PRODUCT_ACTION_TYPES.UPDATE_PRODUCT, updatedProduct));
     }
     const value = {
         products: state.products,
         blankRow: state.blankRow,
         setProducts,
-        toggleProduct
+        toggleProduct,
+        addBlankProduct,
+        updateProduct
     };
     return <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>
 }
