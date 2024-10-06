@@ -63,7 +63,8 @@ export const createUserDocumentFromAuth = async (userAuth) => {
 
 export const getUserDocumentFromAuth = async (userAuth) => {
     console.log("userAuth:", userAuth);
-    const userDocRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/users`, userAuth.uid);
+//    const userDocRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/users`, userAuth.uid);
+    const userDocRef = doc(db, `users`, userAuth.uid);
     console.log("userDocRef:", userDocRef);
     const userDocSnap = await getDoc(userDocRef);
     console.log("userDocSnap:", userDocSnap.data());
@@ -102,7 +103,8 @@ const getProducts = async () => {
 }
 
 export const onProductsChangedListener = (callback) => {
-    const productsRef = collection(db, `env/${config.FIREBASE_ENVIRONMENT}/products`);
+//    const productsRef = collection(db, `env/${config.FIREBASE_ENVIRONMENT}/products`);
+    const productsRef = collection(db, `products`);
     onSnapshot(productsRef, async (querySnapshot) => {
         const products = querySnapshot.docs.map((doc) => doc.data());
         callback(products);
@@ -110,7 +112,8 @@ export const onProductsChangedListener = (callback) => {
 };
 
 export const updateProduct   = async (productId, updatedProduct) => {
-    const productRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/products`, productId);
+//    const productRef = doc(db, `env/${config.FIREBASE_ENVIRONMENT}/products`, productId);
+    const productRef = doc(db, `products`, productId);
     const productSnap = await getDoc(productRef);
     if (productSnap.exists()) {
         await updateDoc(productRef, updatedProduct);
